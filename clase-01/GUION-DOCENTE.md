@@ -18,7 +18,7 @@ componentes con props son de la clase 2; conectar la API a la pantalla es de la 
 - La clase se graba: ante la duda, avanza; el que se pierde rebobina.
 - Ninguna instalación lleva promesa de tiempo. Se da el paso, se señala el plan B y se sigue.
 - La mayoría mira la demo y la aplica después: código grande, un cambio por vez, nombra cada paso.
-- El cierre empieza a las **3:50** pase lo que pase.
+- El cierre empieza a las **3:50** pase lo que pase. El Bloque 7 (taller) es la válvula natural.
 
 **Preparación previa del docente** (antes de la clase):
 - [ ] Correr `npm create vite@latest` en tu máquina con la versión actual y anotar qué pregunta
@@ -30,7 +30,10 @@ componentes con props son de la clase 2; conectar la API a la pantalla es de la 
 - [ ] Subir al repo la carpeta de emergencia `clase-01-instalado/` (proyecto Vite ya creado, con
       Tailwind configurado y los cuatro módulos migrados) y **probar que corre**
       (`npm install && npm run dev`).
-- [ ] Tener listo el `App.tsx` roto del Ejercicio 1 (los cuatro errores) para pegarlo al chat.
+- [ ] Tener listo el `App.tsx` roto del Ejercicio 1 (los cuatro errores) para pegarlo al chat, y
+      los cuatro retos de la Ronda JSX (Bloque 4) en un mensaje aparte.
+- [ ] Tener a mano el enlace de la extensión **React Developer Tools** (Chrome/Edge) — se
+      instala en el taller del Bloque 7.
 - [ ] Publicar el estado final del curso de fundamentos (la clase de TypeScript) y avisar que
       hoy se parte de ahí.
 - [ ] Tener abierto tu proyecto de fundamentos para copiar los módulos en el Bloque 6, y
@@ -39,27 +42,32 @@ componentes con props son de la clase 2; conectar la API a la pantalla es de la 
 
 ## Agenda (4:15)
 
+> Presupuesto honesto: lo dictado se lee a velocidad natural (una diapositiva son 2-3 min);
+> el tiempo grande está en teclear, esperar instalaciones y en los ejercicios.
+
 | # | Bloque | Min | Acum. |
 |---|--------|:---:|:-----:|
-| 1 | Punto de partida + repaso de la clase de TypeScript | 20 | 0:20 |
-| 2 | **Por qué React**: el problema que ya vivimos | 30 | 0:50 |
-| 3 | **Vite**: crear el proyecto (⌨️ lo hacen ellos) | 40 | 1:30 |
-| 4 | **JSX**: la función que devuelve HTML | 45 | 2:15 |
+| 1 | Punto de partida + repaso de la clase de TypeScript | 15 | 0:15 |
+| 2 | **Por qué React**: el problema que ya vivimos | 20 | 0:35 |
+| 3 | **Vite**: crear el proyecto (⌨️ lo hacen ellos) | 35 | 1:10 |
+| 4 | **JSX** + la ronda de retos | 50 | 2:00 |
 | — | ☕ Receso (aparte) | 15 | — |
-| 5 | **La primera pantalla de TechCart** (+ Tailwind en el build) | 45 | 3:00 |
-| 6 | **La mudanza**: migrar `tipos.ts`, `datos.ts`, `api.ts`, `formato.ts` | 50 | 3:50 |
-| 7 | Cierre: resumen, 5 tareas, push y anticipo | 25 | **4:15** |
+| 5 | **La primera pantalla de TechCart** (+ Tailwind en el build) | 40 | 2:40 |
+| 6 | **La mudanza**: migrar `tipos.ts`, `datos.ts`, `api.ts`, `formato.ts` | 40 | 3:20 |
+| 7 | **Taller: la vitrina crece** (segunda tarjeta · Tailwind · DevTools) | 30 | 3:50 |
+| 8 | Cierre: resumen, 5 tareas, push acompañado y anticipo | 25 | **4:15** |
 
-> **Válvulas de recorte** (en este orden, si el reloj se estira): (1) el Ejercicio 2 del Bloque 5
-> lo resuelvo yo directamente; (2) del Bloque 6 se migra solo `tipos.ts` en vivo y los otros tres
-> módulos quedan guiados en el README como parte de la tarea fácil. **Nunca** se recorta el
-> Bloque 2 (es el modelo mental de todo el bloque de React) **ni** el cierre.
+> **Válvulas de recorte** (en este orden, si el reloj se estira): (1) el Bloque 7 entero es la
+> válvula por diseño — se dicta hasta donde alcance y lo que falte pasa a tareas; (2) la Ronda
+> JSX del Bloque 4 se recorta de cuatro retos a dos; (3) el mini-reto de diseño del Bloque 5 lo
+> resuelvo yo. **Nunca** se recorta el Bloque 2 (es el modelo mental de todo el bloque de
+> React) **ni** el cierre.
 
 ---
 
-# ⏱️ 0:00 · BLOQUE 1 — Punto de partida y repaso (20 min)
+# ⏱️ 0:00 · BLOQUE 1 — Punto de partida y repaso (15 min)
 
-### 0:00 · Dónde quedamos (8 min)
+### 0:00 · Dónde quedamos (5 min)
 
 🖥️ **[DIAPO 1 · «Clase 1 — React»]** — título y agenda del día.
 
@@ -72,22 +80,21 @@ y la capa de datos se migran tal cual. Nada de lo que hicieron se bota.*
 🗣️ *Todos parten del estado publicado de la clase de TypeScript. Si tu proyecto quedó distinto,
 descarga ese estado y trabaja sobre él; el tuyo guárdalo aparte.*
 
-### 0:08 · Repaso de tareas (12 min)
+### 0:05 · Repaso de tareas (10 min)
 
 Revisar en vivo **una** de las difíciles de la clase de TypeScript (la que más preguntas haya
-generado — normalmente la de "Mis pedidos"). No se escribe desde cero — no alcanza el tiempo: se
-recorre la solución ya hecha explicando cada decisión, y se reescribe en vivo **solo la aduana**
-(leer el `localStorage` con `unknown` y comprobar antes de confiar), que es la parte que se muda
-a React.
+generado — normalmente la de "Mis pedidos"). No se escribe desde cero: se recorre la solución
+ya hecha explicando cada decisión, y se reescribe en vivo **solo la aduana** (leer el
+`localStorage` con `unknown` y comprobar antes de confiar), que es la parte que se muda a React.
 
 🗣️ *Fíjate en lo que acabamos de hacer: leer un dato externo con `unknown`, comprobar su forma y
 recién usarlo. Esa disciplina se viene con nosotros a React.*
 
 ---
 
-# ⏱️ 0:20 · BLOQUE 2 — Por qué React (30 min)
+# ⏱️ 0:15 · BLOQUE 2 — Por qué React (20 min)
 
-### 0:20 · El problema que ya vivimos (12 min)
+### 0:15 · El problema que ya vivimos (7 min)
 
 🖥️ **[DIAPO 2 · «Nuestro main.ts»]** — el diagrama de su propio proyecto: 3 datos
 (`productos`, `categoriaActiva`, `termino`) y las funciones `pintar…` que hay que llamar a mano.
@@ -101,7 +108,7 @@ la página miente: el dato cambió y la pantalla no.*
 las combinaciones: ¿qué repinto si cambia el término de búsqueda? ¿Y si cambia la categoría Y el
 carrito? Ese "acordarse" no escala. Ese es el problema, y lo vivieron: no me lo tienen que creer.*
 
-### 0:32 · Qué es React, en serio (12 min)
+### 0:22 · Qué es React — y qué NO es (8 min)
 
 🖥️ **[DIAPO 3 · «UI = f(datos)»]** — la fórmula, y debajo: "tú cambias el dato, React repinta".
 
@@ -122,11 +129,11 @@ lenguaje, no reemplaza lo aprendido.
 🗣️ *React es una biblioteca, no un framework — un framework es un entorno que decide todo por
 ti, como Spring en Java; una biblioteca es una pieza que hace una sola cosa. Y React no
 reemplaza nada de lo que sabes: HTML, CSS, TypeScript, fetch, map, filter — todo eso se usa
-dentro de React tal cual. De los seis módulos de tu proyecto, cuatro se mudan hoy sin
-tocar una línea. Los únicos que mueren son `ui.ts` y `main.ts` — las funciones `pintar…` y los
-listeners. Ese trabajo ahora lo hace React.*
+dentro de React tal cual. De los seis módulos de tu proyecto, cuatro se mudan hoy sin tocar una
+línea. Los únicos que mueren son `ui.ts` y `main.ts` — las funciones `pintar…` y los listeners.
+Ese trabajo ahora lo hace React.*
 
-### 0:44 · Componente: la palabra del curso (6 min)
+### 0:30 · Componente: la palabra del curso (5 min)
 
 🖥️ **[DIAPO 5 · «Componente»]** — una tarjeta de producto señalada dentro de la página completa.
 
@@ -138,9 +145,9 @@ entre ellos es la clase 2.*
 
 ---
 
-# ⏱️ 0:50 · BLOQUE 3 — Vite: crear el proyecto (40 min)
+# ⏱️ 0:35 · BLOQUE 3 — Vite: crear el proyecto (35 min)
 
-### 0:50 · Qué es Vite y por qué lo necesitamos (8 min)
+### 0:35 · Qué es Vite y por qué lo necesitamos (5 min)
 
 🖥️ **[DIAPO 6 · «Vite»]** — dos columnas: lo que armamos a mano en fundamentos / lo que Vite trae.
 
@@ -150,7 +157,7 @@ pieza. Vite es esa línea de producción, ya armada y mucho más rápida: un ser
 y un traductor, en un solo comando. Y trae plantillas: le dices "React + TypeScript" y te
 entrega el proyecto con todo conectado.*
 
-### 0:58 · Crear el proyecto (⌨️ lo hacen ellos) (20 min)
+### 0:40 · Crear el proyecto (⌨️ lo hacen ellos) (15 min)
 
 ⌨️ En la terminal, parado donde guardas tus proyectos (fuera del viejo). La carpeta la crea el
 asistente — no hay `mkdir`:
@@ -187,7 +194,7 @@ la ves, tu proyecto de React existe.*
 carpeta `clase-01-instalado/` del repo, `npm install`, `npm run dev`, y lo suyo se mira en el
 receso.
 
-### 1:18 · Tour por la carpeta (12 min)
+### 0:55 · Tour por la carpeta (10 min)
 
 Abrir los archivos en este orden, en vivo, sin diapos. En cada uno, una sola idea:
 
@@ -208,9 +215,10 @@ Abrir los archivos en este orden, en vivo, sin diapos. En cada uno, una sola ide
 - **`src/App.tsx`** — 🗣️ *El primer componente: una función que devuelve HTML. En este archivo
   vamos a trabajar toda la clase.*
 
+### 1:05 · Refresco en caliente + limpieza (5 min)
+
 ⌨️ Demostrar el **refresco en caliente**: con `npm run dev` corriendo, cambiar un texto de
-`App.tsx`, guardar, y mirar el navegador actualizarse solo, sin F5 y sin perder el estado de la
-página.
+`App.tsx`, guardar, y mirar el navegador actualizarse solo, sin F5.
 
 🗣️ *Live Server recargaba la página entera. Esto reemplaza solo la pieza que cambió. Se llama
 hot module replacement y es la razón por la que desarrollar en React se siente rápido.*
@@ -232,9 +240,9 @@ export default function App() {
 
 ---
 
-# ⏱️ 1:30 · BLOQUE 4 — JSX: la función que devuelve HTML (45 min)
+# ⏱️ 1:10 · BLOQUE 4 — JSX + la ronda de retos (50 min)
 
-### 1:30 · Qué es JSX (10 min)
+### 1:10 · Qué es JSX (5 min)
 
 🖥️ **[DIAPO 7 · «JSX»]** — el `App.tsx` mínimo a la izquierda; a la derecha, el JavaScript al
 que se traduce (`createElement`).
@@ -245,7 +253,7 @@ lo vea, Vite lo traduce a llamadas de función normales. Es exactamente lo que y
 TypeScript: escribes en un lenguaje más cómodo, un traductor lo convierte, el navegador recibe
 JavaScript de siempre. Por eso la extensión del archivo es `.tsx`: TypeScript + JSX.*
 
-### 1:40 · Las reglas de JSX — por sus errores (20 min)
+### 1:15 · Las reglas de JSX — por sus errores (15 min)
 
 🗣️ *JSX parece HTML pero tiene reglas propias. En vez de listártelas, voy a cometer los cuatro
 errores que vas a cometer tú esta semana, para que conozcas los mensajes.*
@@ -283,7 +291,7 @@ export default function App() {
 template literal. Lo que NO aceptan es una instrucción: no puedes meter un `if` o un `for` ahí
 adentro — cómo se resuelve eso es tema de la clase 3.*
 
-### 2:00 · Ejercicio 1 (15 min)
+### 1:30 · Ejercicio 1: el App roto (10 min)
 
 🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min de intento; después lo resuelvo yo)*
 
@@ -296,15 +304,37 @@ Resolverlo en vivo nombrando cada error por su mensaje. Remate:
 🗣️ *Los mensajes de error de React y de Vite son buenos. Léelos antes de googlear: la mitad de
 las veces la respuesta está en la primera línea.*
 
+### 1:40 · La ronda JSX: cuatro retos (20 min)
+
+🗣️ *Ahora ustedes, en caliente. Cuatro retos cortos — tres minutos cada uno, y lo resuelvo
+entre reto y reto. Créate un componente de práctica para no ensuciar `App`: archivo
+`src/Practica.tsx`, función `Practica` exportada por default, y úsalo un rato dentro de `App`
+como `<Practica />` — al final de la ronda lo quitamos. Sí: acabas de usar tu primer componente
+propio como etiqueta; en la clase 2 lo entendemos completo.*
+
+⌨️ Pegar los retos al chat, de uno en uno; máximo 3 min de intento y resolución en vivo:
+
+1. **La constante.** Declara `const tienda = 'TechCart'` y muéstrala en un `h2`, en mayúsculas
+   (`toUpperCase`, dentro de las llaves).
+2. **La cuenta.** `const precio = 249.9`: muestra el precio con IGV (18%) en un párrafo, con
+   dos decimales (`toFixed(2)` — de fundamentos).
+3. **El fragmento.** Devuelve tres párrafos hermanos SIN ningún `div` de relleno.
+4. **El atributo con dato.** Una `img` cuyo `src` y `alt` salgan de constantes — las llaves
+   también funcionan en los atributos.
+
+🗣️ *Cierre de la ronda: todo lo que hicieron es TypeScript de fundamentos adentro de llaves.
+JSX no trajo un lenguaje nuevo — trajo un lugar nuevo donde escribir el que ya saben.* ⌨️ Quitar
+`<Practica />` de `App` (el archivo queda para las tareas).
+
 ---
 
-# ☕ 2:15 · RECESO (15 min, aparte)
+# ☕ 2:00 · RECESO (15 min, aparte)
 
 ---
 
-# ⏱️ 2:15 · BLOQUE 5 — La primera pantalla de TechCart (45 min)
+# ⏱️ 2:00 · BLOQUE 5 — La primera pantalla de TechCart (40 min)
 
-### 2:15 · Tailwind entra al build (10 min) — demo del docente; ellos lo replican con calma
+### 2:00 · Tailwind entra al build (10 min) — demo del docente; ellos lo replican con calma
 
 🗣️ *En la clase de Tailwind usamos el CDN: el navegador descargaba el traductor de clases cada
 vez. Eso era para prototipos, y lo dijimos. Ahora que tenemos build, Tailwind se instala DENTRO
@@ -346,7 +376,7 @@ Y en `src/index.css`, una sola línea (borrando lo que hubiera):
 ⚠️ Si a alguien no le funciona: que siga sin estilos — todo lo de hoy funciona igual con HTML
 pelado — y use la carpeta de emergencia después.
 
-### 2:25 · La tarjeta de producto (20 min)
+### 2:10 · La tarjeta de producto (15 min)
 
 🗣️ *Vamos a construir la primera pantalla real: el encabezado de TechCart y una tarjeta de
 producto. Los datos, por ahora, escritos a mano — igual que al principio de JavaScript, cuando
@@ -388,24 +418,33 @@ export default function App() {
 del curso de fundamentos; las llaves, de hace media hora. Lo único nuevo es dónde vive: dentro
 de una función que React ejecuta.*
 
-### 2:45 · Ejercicio 2 (15 min)
+### 2:25 · Ejercicio 2 (8 min)
 
 🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min de intento; después lo resuelvo yo)*
 
 🗣️ *Agrégale a la tarjeta dos cosas: el stock ("12 disponibles") usando el dato del objeto, y
-el precio con IGV incluido debajo del precio base — el IGV es 18%, y la cuenta va en las llaves.*
+el precio con IGV incluido debajo del precio base — la cuenta ya la hiciste en la ronda.*
 
 Resolver en vivo. Remate:
 
-🗣️ *`{producto.precio * 1.18}` te salió con ocho decimales, ¿no? En tu proyecto viejo eso lo
+🗣️ *`{producto.precio * 1.18}` con sus decimales largos otra vez. En tu proyecto viejo eso lo
 resolvía `formatearPrecio`. La buena noticia es que ese archivo no hay que reescribirlo — y ese
 es exactamente el siguiente bloque.*
 
+### 2:33 · Mini-reto de diseño (7 min)
+
+🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min de intento; después muestro una solución)*
+
+🗣️ *Con la documentación de Tailwind abierta (tailwindcss.com), dale a la tarjeta un toque
+tuyo: una sombra al pasar el mouse (`hover:shadow-lg`), una transición, un borde redondeado
+distinto — mínimo dos utilidades que NO hayamos usado hoy. Buscar en esa documentación es una
+habilidad del oficio: ejercítala.*
+
 ---
 
-# ⏱️ 3:00 · BLOQUE 6 — La mudanza: los módulos se migran tal cual (50 min)
+# ⏱️ 2:40 · BLOQUE 6 — La mudanza: los módulos se migran tal cual (40 min)
 
-### 3:00 · Qué se muda y qué muere (5 min)
+### 2:40 · Qué se muda y qué muere (4 min)
 
 🖥️ **[DIAPO 8 · «La mudanza»]** — los seis módulos del proyecto de fundamentos: cuatro con
 flecha a React, dos tachados (`ui.ts`, `main.ts`).
@@ -416,7 +455,7 @@ listeners. No los perdimos: ese trabajo es el que React acaba de asumir. Que la 
 sobreviva intacta al cambio de framework no es suerte: es lo que ganamos separando
 responsabilidades desde que dividimos el proyecto en módulos, en JavaScript.*
 
-### 3:05 · Migrar y tipar la tarjeta (20 min)
+### 2:44 · Migrar y tipar la tarjeta (12 min)
 
 ⌨️ Copiar `tipos.ts`, `datos.ts`, `api.ts` y `formato.ts` desde el proyecto de fundamentos a
 `src/`. Después, en `App.tsx`:
@@ -443,11 +482,14 @@ cambiarle una coma. Complétalo con los campos que pide.*
 ⌨️ Completar el objeto hasta que compile, y reemplazar el precio crudo por
 `{formatearPrecio(producto.precio)}`.
 
-🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min)* — 🗣️ *Rómpelo a propósito: cámbiale el tipo a un
-campo, bórrale otro, y lee los dos mensajes. Quiero que reconozcas a TypeScript quejándose
-dentro de un archivo `.tsx`.*
+### 2:56 · Ejercicio 3: rómpelo a propósito (8 min)
 
-### 3:25 · La API responde desde React (15 min)
+🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min de intento; después lo resuelvo yo)*
+
+🗣️ *Cámbiale el tipo a un campo del producto, bórrale otro, y lee los dos mensajes. Quiero que
+reconozcas a TypeScript quejándose dentro de un archivo `.tsx`.*
+
+### 3:04 · La API responde desde React (10 min)
 
 ⌨️ Al final de `src/main.tsx`, marcado como **temporal**:
 
@@ -461,17 +503,14 @@ obtenerProductos().then((resultado) => {
 ```
 
 🗣️ *Abre la consola: tus 38 productos, pedidos por el mismo `Promise.all` con el mismo
-respaldo que escribiste tú. La capa de datos completa ya vive en React.*
-
-🗣️ *Y ahora la pregunta honesta: ¿por qué lo imprimo en consola en vez de pintarlo en la
-página? Porque pedir datos cuando el componente aparece — y repintar cuando llegan — necesita
-una pieza de React que se llama `useEffect`, y esa pieza es la clase 6. Cada cosa a su tiempo:
-hoy los datos llegan hasta la consola; a la pantalla llegan cuando tengamos el vocabulario para
-hacerlo bien.*
+respaldo que escribiste tú. La capa de datos completa ya vive en React. ¿Por qué en consola y
+no en la página? Porque pedir datos cuando el componente aparece — y repintar cuando llegan —
+necesita una pieza de React que se llama `useEffect`, y esa pieza es la clase 6. Hoy los datos
+llegan hasta la consola; a la pantalla llegan cuando tengamos el vocabulario para hacerlo bien.*
 
 ⌨️ Borrar la prueba de humo antes de seguir.
 
-### 3:40 · El build de producción (10 min)
+### 3:14 · El build de producción (6 min)
 
 ⌨️ Con todo compilando:
 
@@ -481,16 +520,48 @@ npm run build
 
 🗣️ *Primero corre `tsc` — tu revisor de la clase de TypeScript, ahora solo revisa, no traduce —
 y después Vite empaqueta todo en `dist/`: un HTML, un CSS y un JavaScript minificados — sin
-espacios ni nombres largos, para que pesen menos. Esa
-carpeta es lo que algún día subiremos a producción; ese día es la clase 12, la última. Guarda
-esta idea: `npm run build` sin errores es, desde hoy, tu criterio de entrega de todas las
-tareas.*
+espacios ni nombres largos, para que pesen menos. Esa carpeta es lo que algún día subiremos a
+producción; ese día es la clase 12, la última. Guarda esta idea: `npm run build` sin errores es,
+desde hoy, tu criterio de entrega de todas las tareas.*
 
 ---
 
-# ⏱️ 3:50 · BLOQUE 7 — CIERRE (25 min) — reserva dura, empieza a las 3:50
+# ⏱️ 3:20 · BLOQUE 7 — Taller: la vitrina crece (30 min) — la válvula del día
 
-### 3:50 · Resumen (7 min)
+> Si los bloques anteriores se estiraron, este taller se recorta o se salta entero: sus tres
+> piezas están cubiertas por las tareas y las lecturas. Si el ritmo vino bien, se dicta completo.
+
+### 3:20 · Segunda tarjeta, a mano (10 min)
+
+⌨️ Guiado, ellos en su proyecto: duplicar el `article` con OTRO producto de su `datos.ts`
+(`const producto2: Producto = productos[1]`… o el que quieran, importado).
+
+🗣️ *Dos tarjetas, dos objetos, el mismo HTML dos veces. Funciona — y se siente raro, ¿verdad?
+Estás copiando estructura. Guarda esa sensación: la tarea la va a empeorar a propósito, y la
+próxima clase la cura con nombre y apellido.*
+
+### 3:30 · Mini-reto Tailwind II (10 min)
+
+🧪 **[EJERCICIO EN CLASE]** *(máx. 5 min de intento; después muestro una solución)*
+
+🗣️ *La grilla: envuelve las dos tarjetas en un `section` que las acomode en fila con espacio
+entre ellas (`flex` y `gap`, de la clase de Tailwind), y que en pantallas chicas caigan una
+debajo de otra (`flex-wrap`). Responsive con utilidades — fundamentos puro.*
+
+### 3:40 · React DevTools: instalar y mirar (10 min)
+
+⌨️ Instalar la extensión **React Developer Tools** (Chrome/Edge, dos clics) y abrir la pestaña
+**Components** con la tienda en pantalla.
+
+🗣️ *El inspector de elementos muestra el HTML final; esta pestaña nueva muestra los
+**componentes** — hoy solo `App`, mañana un árbol entero. Va a ser tu radiografía de React todo
+el bloque. Déjala instalada: la próxima clase la usamos en serio.*
+
+---
+
+# ⏱️ 3:50 · BLOQUE 8 — CIERRE (25 min) — reserva dura, empieza a las 3:50
+
+### 3:50 · Resumen (4 min)
 
 🖥️ **[DIAPO 9 · «Lo de hoy»]** — cinco líneas:
 
@@ -500,55 +571,62 @@ tareas.*
 4. Un **componente** es una función que devuelve JSX. Hoy: `App`. La comunicación entre varios: clase 2.
 5. La capa de datos **se migró intacta**: separar responsabilidades pagó la mudanza.
 
-### 3:57 · Tareas (10 min) — criterio de entrega: `npm run build` sin errores + push
+### 3:54 · Tareas (3 min) — criterio de entrega: `npm run build` sin errores + push
 
-🖥️ **[DIAPO 10 · «5 tareas»]** — la lista con sus niveles; queda proyectada mientras se dictan.
+🖥️ **[DIAPO 10 · «5 tareas»]** — se leen tal cual; el detalle queda en el README de la clase.
 
-🗣️ ***Fácil — termina la mudanza.** Si algún módulo quedó sin migrar en clase, complétalo
-(`datos.ts`, `formato.ts`). Cambia el producto de la tarjeta por uno real de tu `datos.ts` —
-importado, no copiado.*
+🗣️ ***Fácil — termina la mudanza.** Completa los módulos que falten y cambia el producto de la
+tarjeta por uno real de tu `datos.ts` — importado, no copiado.*
 
 🗣️ ***Intermedia 1 — la página completa.** Dale a `App` la estructura semántica que aprendiste
-en HTML: `header` con logo y nav, `main` con la tarjeta, `footer`. Todo JSX, todo con utilidades
-de Tailwind. Cuidado con los cuatro errores del Ejercicio 1.*
+en HTML: `header` con logo y nav, `main` con las tarjetas, `footer`. Todo JSX, todo con
+utilidades de Tailwind.*
 
-🗣️ ***Intermedia 2 — tres tarjetas.** Duplica la tarjeta para dos productos más de tu
-`datos.ts`. Sí: copiar y pegar el `article` tres veces. Hazlo aunque duela — y escribe en un
-comentario del código qué problema le ves a ese copy-paste. Tu respuesta es la primera
-diapositiva de la próxima clase.*
+🗣️ ***Intermedia 2 — tres tarjetas.** Suma una tercera tarjeta copiando y pegando — sí, otra
+vez — y escribe en un comentario del código qué problema le ves a ese copy-paste. Tu respuesta
+es la primera diapositiva de la próxima clase.*
 
 🗣️ ***Difícil 1 — el resumen del carrito.** Migra `carrito.ts`. Crea un array de prueba con dos
 `ItemCarrito` y muestra bajo las tarjetas lo que devuelve `resumenCarrito(items)` — el mismo
-texto que llevaba el encabezado de tu tienda. Todo son funciones puras que ya escribiste; lo
-nuevo es solo mostrarlas con llaves.*
+texto que llevaba el encabezado de tu tienda.*
 
-🗣️ ***Difícil 2 — leer React de verdad.** La plantilla que borramos traía un contador que subía
-al hacer clic. Recupéralo de la documentación (react.dev, página "Quick Start"), pégalo en un
-componente y haz que funcione. Vas a encontrar un `useState` que todavía no te enseñé: no lo
-estudies, solo léelo y escribe en un comentario qué crees que hace. Lo confirmamos en la
-clase 4.*
+🗣️ ***Difícil 2 — leer React de verdad.** Recupera el contador de la plantilla desde react.dev
+("Quick Start"), hazlo funcionar en tu `Practica.tsx`, y comenta qué crees que hace ese
+`useState` que aún no te enseño. Lo confirmamos en la clase 4.*
 
-### 4:07 · Push y lecturas (3 min)
+### 3:57 · Push acompañado + dudas (12 min)
 
-⌨️ `git add . && git commit -m "feat: proyecto React con Vite + primera pantalla" && git push`
+⌨️ Todos, ahora, en vivo:
+
+```bash
+npm run build
+git add . && git commit -m "feat: proyecto React con Vite + primera pantalla" && git push
+```
+
+🗣️ *Corran el build y suban. Este es el momento de los errores: si algo no compila, lo vemos
+AHORA, juntos — no el viernes a las once de la noche. Mientras suben, pregunten lo que quedó
+picando.*
+
+Resolver en vivo los errores que aparezcan (los típicos: import roto tras la limpieza, campo
+faltante del contrato, `class` en vez de `className`).
+
+### 4:09 · Lecturas y anticipo (6 min)
 
 Lecturas (van también en el README):
 - **es.react.dev** → "Describir la interfaz de usuario" (la sección completa de JSX).
 - **vite.dev/guide** → "Why Vite" (ahora la entiendes: tú armaste esa línea a mano).
-- Buscar: *"React Developer Tools"* — instala la extensión; la usamos desde la próxima clase.
-
-### 4:10 · Anticipo (5 min) — fin del contenido: 4:15
+- **tailwindcss.com** → deja la pestaña de utilidades a mano: los mini-retos vuelven.
 
 🖥️ **[DIAPO 11 · «Props»]** — la tarjeta triplicada con el copy-paste tachado, y al lado un
 `<ProductCard producto={…} />` con su `interface Props`.
 
 🔮 **[ANTICIPO]**
 
-🗣️ *La tarea intermedia te va a obligar a copiar la misma tarjeta tres veces. Ese dolor tiene
-nombre y solución: la próxima clase esa tarjeta se convierte en un componente — `ProductCard` —
-que se escribe una vez y se usa tres, y cada copia recibe su producto por algo llamado props.
-La `interface Props` con la que te las voy a presentar la sabes leer desde la clase de
-TypeScript. Trae las tareas hechas y el build en cero. Nos vemos.*
+🗣️ *Hoy copiaste la tarjeta dos veces y la tarea te pide una tercera. Ese dolor tiene nombre y
+solución: la próxima clase esa tarjeta se convierte en un componente — `ProductCard` — que se
+escribe una vez y se usa las veces que haga falta, y cada copia recibe su producto por algo
+llamado props. La `interface Props` con la que te las voy a presentar la sabes leer desde la
+clase de TypeScript. Trae las tareas hechas y el build en cero. Nos vemos.*
 
 ---
 
