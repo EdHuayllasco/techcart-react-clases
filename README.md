@@ -1,13 +1,11 @@
-# TechCart — Bloque React (guiones del docente)
+# Bloque React — Bootcamp FrontEnd
 
-Repositorio del **bloque de React** del bootcamp FrontEnd. React tiene numeración propia:
+Material del **bloque de React** del bootcamp FrontEnd. React tiene numeración propia:
 **12 clases** (clase 1 a 12 de React), que continúan el curso de fundamentos (HTML, CSS,
 JavaScript y TypeScript, 12 clases en su propio repositorio).
 
-Cada carpeta `clase-XX/` contiene el `GUION-DOCENTE.md` de esa sesión y, cuando existan, sus
-diapositivas y material de apoyo. Las reglas de diseño de clase (modelo de tiempo, reglas de la
-modalidad virtual, estilo de los materiales) viven en el
-`MAPA-CAPACIDAD-4h15.md` de `techcart-clases`.
+Cada carpeta `clase-XX/` contiene las **diapositivas** de esa sesión (en `slides/`, como HTML
+listo para abrir en el navegador o imprimir a PDF) y, cuando exista, material de apoyo.
 
 > Cada clase dura **4:15 de contenido** (el receso de 15 min va aparte). Se dicta en
 > **TypeScript** desde la clase 1. El proyecto es una **tienda nueva, desde cero absoluto**,
