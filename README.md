@@ -10,14 +10,17 @@ modalidad virtual, estilo de los materiales) viven en el
 `MAPA-CAPACIDAD-4h15.md` de `techcart-clases`.
 
 > Cada clase dura **4:15 de contenido** (el receso de 15 min va aparte). Se dicta en
-> **TypeScript** desde la clase 1. El proyecto es **TechCart**: la tienda construida en
-> fundamentos, reconstruida en React clase a clase.
+> **TypeScript** desde la clase 1. El proyecto es una **tienda nueva, desde cero absoluto**,
+> con la estética de las tiendas grandes (plantilla de referencia estilo iStore); cada alumno
+> bautiza la suya. Rige el **modelo de flujo**: cada guion carga material de sobra, la clase se
+> corta donde toque a las 3:50, y la siguiente retoma exacto — los temas por clase son cortes
+> sugeridos.
 
 ## Ruta del bloque (12 clases)
 
-| Clase | Tema | Se agrega a TechCart |
+| Clase | Tema | Se agrega a la tienda |
 |:--:|---|---|
-| 01 | Introducción a React + Vite (plantilla React + TS) + JSX | Proyecto nuevo; se migran `tipos.ts` y `api.ts` |
+| 01 | Introducción a React + Vite (plantilla React + TS) + JSX | Proyecto desde cero: contrato + catálogo semilla |
 | 02 | Componentes funcionales + props tipadas | Las cards como componentes |
 | 03 | Renderizado condicional + renderizado de listas | Catálogo con estados y `key` |
 | 04 | Manejo de eventos + `useState` | Carrito con estado |
