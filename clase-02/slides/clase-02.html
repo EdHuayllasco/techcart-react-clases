@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 2 de React — Las piezas se comunican (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+  .codebox .del{ text-decoration:line-through; opacity:.55; }
+  .caplbl{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--dark); font-weight:600; margin-bottom:6px; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  /* Citas de alumnos */
+  .quotes{ display:flex; flex-direction:column; gap:10px; width:100%; max-width:700px; }
+  .qt{ background:var(--white); border-left:4px solid var(--cyan); border-radius:0 12px 12px 0; padding:12px 18px; text-align:left; box-shadow:0 5px 16px rgba(20,30,50,.06); }
+  .qt .qx{ font-size:15px; font-style:italic; color:var(--dark); }
+  .qt .qw{ font-size:11px; color:var(--soft); margin-top:4px; }
+
+  /* Árbol de componentes */
+  .tree{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .tnode{ background:var(--black); color:var(--cyan); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; border-radius:10px; padding:8px 18px; }
+  .tarrows{ font-size:20px; color:var(--cyan); font-weight:700; letter-spacing:.3em; }
+  .trow{ display:flex; gap:12px; }
+  .tleaf{ background:var(--white); border:2px solid var(--cyan); border-radius:10px; padding:7px 14px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--dark); box-shadow:0 4px 12px rgba(20,30,50,.06); }
+  .tleaf small{ display:block; color:var(--soft); font-size:9.5px; font-family:'IBM Plex Sans',sans-serif; margin-top:2px; }
+
+  /* Tabla qué pinta JSX */
+  .vsbox{ display:flex; gap:18px; width:100%; justify-content:center; }
+  .vscard{ flex:1; max-width:340px; border-radius:12px; padding:14px 18px; text-align:left; }
+  .vscard.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .vscard.bad{ background:#fdeef0; border:2px solid #c0264a; }
+  .vscard .op{ font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:700; }
+  .vscard.good .op{ color:#0a7d2c; } .vscard.bad .op{ color:#c0264a; }
+  .vscard .note{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  /* Tres pantallas de estado */
+  .estados{ display:flex; gap:14px; justify-content:center; width:100%; }
+  .est{ flex:1; max-width:230px; background:var(--white); border-radius:12px; padding:12px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:center; }
+  .est .en{ font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--cyan); margin-bottom:8px; }
+  .est .box{ border-radius:8px; padding:14px 8px; font-size:11px; }
+  .est.carga .box{ background:var(--light); color:var(--soft); }
+  .est.error .box{ background:#fdeef0; color:#c0264a; }
+  .est.listo .box{ background:#e6f7ec; color:#0a7d2c; }
+
+  /* key pares */
+  .kpairs{ display:flex; gap:10px; justify-content:center; width:100%; }
+  .kp{ background:var(--white); border-radius:10px; padding:9px 13px; box-shadow:0 4px 12px rgba(20,30,50,.06); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; }
+  .kp b{ color:var(--cyan); display:block; font-size:14px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 2</div>
+    <h1>Las piezas<br />se comunican</h1>
+    <p class="sub">Props opcionales, composición y la regla de oro — y de largo: el catálogo que se pinta solo y la página que decide.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">retomar el flujo donde se cortó</div></div><div class="tm">10'+</div></div>
+        <div class="icard"><div class="n">1.</div><div><div class="tt">Props opcionales</div><div class="dd">? y = · el Header de la tienda</div></div><div class="tm">20'</div></div>
+        <div class="icard"><div class="n">2.</div><div><div class="tt">Composición</div><div class="dd">Footer · el árbol · DevTools · la regla de oro</div></div><div class="tm">25'</div></div>
+        <div class="icard"><div class="n">3.</div><div><div class="tt">Leer App + build</div><div class="dd">la página como índice</div></div><div class="tm">10'</div></div>
+        <div class="icard manos"><div class="n">4+</div><div><div class="tt">FLUJO: listas y condicionales</div><div class="dd">map · key · ternario · && · estados</div></div><div class="tm">→ 3:50</div></div>
+        <div class="icard"><div class="n">C.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">25'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>flujo: se corta donde toque y la clase 3 retoma exacto</b></p>
+    </div>
+    <div class="pageno">2 / 13</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: SUS COMENTARIOS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Ustedes</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">De la tarea de la vitrina · reemplazar por comentarios reales antes de la clase</div>
+    <h2 style="margin-bottom:14px">El problema, <span class="cy">en sus palabras</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="quotes">
+        <div class="qt"><div class="qx">"Si cambio el diseño de la tarjeta, tengo que corregirlo tres veces."</div><div class="qw">— comentario de la tarea</div></div>
+        <div class="qt"><div class="qx">"Es fácil equivocarse en una de las copias y que quede distinta."</div><div class="qw">— comentario de la tarea</div></div>
+        <div class="qt"><div class="qx">"Con cuarenta productos esto sería imposible de mantener."</div><div class="qw">— comentario de la tarea</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Diagnosticaron el problema solos. La solución ya la tienen: <b>la tarjeta se escribe una vez</b> y cada uso recibe su producto por props.</p>
+    </div>
+    <div class="pageno">3 / 13</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: OPCIONAL Y POR DEFECTO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Props</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">01</div></aside>
+  <div class="body col">
+    <div class="kicker">Props que pueden faltar</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">?</span> opcional · <span class="mono cy">=</span> por defecto</h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox sm" style="max-width:640px">
+        <span class="p">interface</span> <span class="t">Props</span> {<br />
+        &nbsp;&nbsp;<span class="v">nombre</span>: <span class="t">string</span>;<br />
+        &nbsp;&nbsp;<span class="v">eslogan</span><span class="u">?</span>: <span class="t">string</span>; <span class="c">// puede faltar — el ? de TypeScript</span><br />
+        }<br /><br />
+        <span class="p">function</span> <span class="u">Header</span>({ nombre, eslogan <span class="u">=</span> <span class="v">'Tecnología para todos'</span> }: <span class="t">Props</span>)
+      </div>
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">&lt;Header nombre="Tienda Tec" /&gt;</div><div class="note">sin eslogan → sale el valor por defecto</div></div>
+        <div class="vscard bad"><div class="op">&lt;Header /&gt;</div><div class="note"><b>Property 'nombre' is missing</b> — lo obligatorio se exige, en el editor</div></div>
+      </div>
+    </div>
+    <div class="pageno">4 / 13</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: LOS DATOS BAJAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Árbol</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">02</div></aside>
+  <div class="body col">
+    <div class="kicker">Composición · una página es un árbol de piezas</div>
+    <h2 style="margin-bottom:14px">Los datos <span class="cy">bajan</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="tree">
+        <div class="tnode">App</div>
+        <div class="tarrows">↓ &nbsp; ↓ &nbsp; ↓</div>
+        <div class="trow">
+          <div class="tleaf">Header<small>nombre · eslogan?</small></div>
+          <div class="tleaf">ProductCard ×3<small>producto</small></div>
+          <div class="tleaf">Footer<small>(sin props)</small></div>
+        </div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:660px">De padre a hijo, en <b>un solo sentido</b>. <span class="mono">App</span> conoce el catálogo; la tarjeta solo conoce SU producto.<br />Si algo se ve mal, el dato malo vino de arriba: <b>un solo camino que revisar</b>.</p>
+    </div>
+    <div class="pageno">5 / 13</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: LAS PROPS NO SE TOCAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">La regla</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">02</div></aside>
+  <div class="body col">
+    <div class="kicker">La regla de oro de React</div>
+    <h2 style="margin-bottom:14px">Las props <span class="cy">no se tocan</span></h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="codebox sm" style="max-width:560px">
+        <span class="c">// dentro de ProductCard:</span><br />
+        <span class="del">producto.precio = 0;</span> &nbsp;<span class="c">// compila… y rompe la regla</span>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15.5px;max-width:660px">Un componente <b>lee</b> sus props, las <b>muestra</b>, y nada más — la disciplina de las <b>funciones puras</b> de fundamentos. Si la tarjeta modifica el producto, <span class="mono">App</span> ya no puede confiar en su propio dato.</p>
+      <div class="war" style="max-width:600px">¿Y cómo se cambian los datos <b>legalmente</b>? Esa pregunta ES la clase 4 (<span class="mono">useState</span>). Hoy: se mira, no se toca.</div>
+    </div>
+    <div class="pageno">6 / 13</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: MAP -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Flujo</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">04</div></aside>
+  <div class="body col">
+    <div class="kicker">Flujo → material de la clase 3</div>
+    <h2 style="margin-bottom:14px">El catálogo <span class="cy">se pinta solo</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox sm" style="max-width:620px">
+        <span class="del">&lt;ProductCard producto={productos[0]} /&gt;</span><br />
+        <span class="del">&lt;ProductCard producto={productos[1]} /&gt;</span><br />
+        <span class="del">&lt;ProductCard producto={productos[2]} /&gt;</span><br /><br />
+        {productos.<span class="u">map</span>((p) =&gt; (<br />
+        &nbsp;&nbsp;<span class="t">&lt;ProductCard</span> <span class="v">producto</span>={p} <span class="t">/&gt;</span><br />
+        ))}
+      </div>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:680px">El <span class="mono">map</span> de fundamentos (el de los Streams de Java) + las llaves de JSX: si la expresión devuelve un <b>array de JSX</b>, React pinta cada elemento.<br /><b>Agregar un producto a datos.ts = agregar una tarjeta.</b> Nadie vuelve a tocar este JSX.</p>
+    </div>
+    <div class="pageno">7 / 13</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: KEY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Flujo</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">04</div></aside>
+  <div class="body col">
+    <div class="kicker">El peaje del map · Each child should have a unique "key" prop</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">key</span> = identidad</h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="kpairs">
+        <div class="kp"><b>key={1}</b>Audífonos</div>
+        <div class="kp"><b>key={2}</b>Laptop 14"</div>
+        <div class="kp"><b>key={3}</b>Reloj</div>
+        <div class="kp" style="opacity:.85"><b>key={p.id}</b>siempre el id del dato</div>
+      </div>
+      <div class="codebox sm" style="max-width:560px">
+        {productos.map((p) =&gt; <span class="t">&lt;ProductCard</span> <span class="u">key</span>={p.<span class="v">id</span>} <span class="v">producto</span>={p} <span class="t">/&gt;</span>)}
+      </div>
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">key={p.id}</div><div class="note">la identidad viaja con el dato: filtrar y reordenar no la rompen</div></div>
+        <div class="vscard bad"><div class="op">key={indice}</div><div class="note">la posición cambia cuando la lista cambia — <b>la identidad miente</b></div></div>
+      </div>
+    </div>
+    <div class="pageno">8 / 13</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: QUÉ PINTA JSX / TRAMPA DEL 0 -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Flujo</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">04</div></aside>
+  <div class="body col">
+    <div class="kicker">Condicionales: ternario · && · return null</div>
+    <h2 style="margin-bottom:14px">Qué pinta JSX — y <span class="cy">la trampa del 0</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="vsbox">
+        <div class="vscard bad"><div class="op">false · null · undefined</div><div class="note">JSX los traga en silencio — por eso el <span class="mono">&amp;&amp;</span> funciona</div></div>
+        <div class="vscard good"><div class="op">0 · '' · textos · números</div><div class="note">SÍ se pintan — y ahí está la trampa</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:640px">
+        <span class="del">{producto.stock &amp;&amp; &lt;p&gt;…&lt;/p&gt;}</span> &nbsp;<span class="c">// stock = 0 → pinta un 0 suelto</span><br />
+        {producto.stock <span class="u">&gt; 0</span> &amp;&amp; producto.stock <span class="u">&lt;= 5</span> &amp;&amp; &lt;p&gt;¡Últimas unidades!&lt;/p&gt;
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Regla del proyecto: con números, la condición del <span class="mono">&amp;&amp;</span> es una <b>comparación explícita</b>. Nunca el número pelado.</p>
+    </div>
+    <div class="pageno">9 / 13</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: ESTADOS DE PÁGINA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Flujo</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">04</div></aside>
+  <div class="body col">
+    <div class="kicker">Nueva unión en tipos.ts — escrita desde cero</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">EstadoCarga</span>: la página sabe qué decir</h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="codebox sm" style="max-width:620px">
+        <span class="p">export type</span> <span class="t">EstadoCarga</span> = <span class="v">'cargando'</span> | <span class="v">'listo'</span> | <span class="v">'error'</span>;
+      </div>
+      <div class="estados">
+        <div class="est carga"><div class="en">'cargando'</div><div class="box">Cargando catálogo…</div></div>
+        <div class="est listo"><div class="en">'listo'</div><div class="box">las tarjetas, con el map</div></div>
+        <div class="est error"><div class="en">'error'</div><div class="box">No pudimos cargar los productos</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px;max-width:680px">Hoy la constante se cambia <b>a mano</b> y la pantalla obedece. Que cambie sola necesita <span class="mono">useState</span> (clase 4) y datos reales (clase 7). <b>La pantalla ya sabe qué hacer cuando eso llegue.</b></p>
+    </div>
+    <div class="pageno">10 / 13</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">? y =</div><div class="x">props opcionales con valor por defecto — lo obligatorio se exige</div></div>
+        <div class="rc"><div class="h">composición</div><div class="x">componentes dentro de componentes; cada pieza en su archivo</div></div>
+        <div class="rc"><div class="h">los datos bajan</div><div class="x">de padre a hijo, un solo sentido — y las <b>props no se tocan</b></div></div>
+        <div class="rc"><div class="h">DevTools</div><div class="x">el árbol, las props, y UI = f(datos) visto en vivo</div></div>
+        <div class="rc"><div class="h">map + key</div><div class="x">el catálogo se pinta solo; la key es el id, nunca el índice</div></div>
+        <div class="rc"><div class="h">condicionales</div><div class="x">ternario · &amp;&amp; con comparación explícita · return null</div></div>
+      </div>
+    </div>
+    <div class="pageno">11 / 13</div>
+  </div>
+</section>
+
+<!-- 12 · DIAPO 11: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>: tu tienda al día — <span class="mono">Header</span> con nombre y eslogan, <span class="mono">Footer</span>, y lo que el flujo haya alcanzado. Con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Los beneficios de tu tienda</b>: componente <span class="mono">Beneficio</span> con <span class="mono">titulo</span> (obligatorio) y <span class="mono">detalle?</span> (con valor por defecto), usado tres veces: envío, cuotas, garantía.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El precio como pieza</b>: componente <span class="mono">Precio</span> (recibe <span class="mono">precio: number</span>, muestra base y con IGV usando tu <span class="mono">formatearPrecio</span>) dentro de <span class="mono">ProductCard</span>. Composición.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>El catálogo con categorías</b>: amplíalo a 12 productos y suma <span class="mono">categoria: string</span> al contrato, propagado a todos. TypeScript te guía. Es la semilla de los filtros (clase 5).</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Por qué el índice miente</b>: lee "Renderizar listas" en es.react.dev y explica en un comentario largo, con tus palabras, por qué el índice como <span class="mono">key</span> se rompe al filtrar o reordenar.</div></div>
+      </div>
+    </div>
+    <div class="pageno">12 / 13</div>
+  </div>
+</section>
+
+<!-- 13 · DIAPO 12: ANTICIPO -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Próxima clase — retomamos donde cortamos</span>
+    <h2>Los botones <span style="color:var(--cyan)">cobran vida</span></h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#6b7686">// hasta hoy, TODO se cambia editando el archivo…</span><br />
+      <span style="color:#e6e9f2">&lt;button </span><span style="color:var(--cyan)">onClick</span><span style="color:#e6e9f2">={agregarAlCarrito}&gt;Agregar al carrito&lt;/button&gt;</span><br /><br />
+      <span style="color:#6b7686">// …y la pieza que llevamos dos clases rodeando:</span><br />
+      <span style="color:#e6e9f2">const [</span><span style="color:var(--cyan)">carrito</span><span style="color:#e6e9f2">, </span><span style="color:var(--cyan)">setCarrito</span><span style="color:#e6e9f2">] = useState&lt;ItemCarrito[]&gt;([])</span>
+    </div>
+    <p class="lead">Eventos — el primo del <b>addEventListener</b> de fundamentos — y <b>useState</b>: la memoria del componente. El contador que leíste en la tarea de la clase 1 por fin queda explicado.</p>
+    <p class="bye">El 🛒 0 del encabezado va a dejar de mentir. Trae las tareas hechas y el build en cero.</p>
+  </div>
+</section>
+
+</body>
+</html>
