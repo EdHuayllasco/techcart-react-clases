@@ -6,3 +6,5 @@ export interface Producto {
     imagen : string;
     stock : number;
 }
+
+export type EstadoCarga = 'cargando' | 'listo' | 'error';
