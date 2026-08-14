@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Evaluación del Bloque React: rúbrica</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --cyandark:#0089b0; --black:#030304; --dark:#212121; --light:#F1F4F9; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  @page{ size:A4; margin:14mm 13mm; }
+  body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); font-size:10.5px; line-height:1.45; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+
+  header.doc{ background:var(--black); color:#fff; border-radius:12px; padding:18px 22px; margin-bottom:14px; }
+  header.doc .eyebrow{ color:var(--cyan); font-weight:600; font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+  header.doc h1{ font-size:24px; font-weight:700; letter-spacing:-.02em; margin:4px 0 6px; }
+  header.doc p{ color:#c5cfda; font-size:11px; max-width:640px; }
+
+  h2{ font-size:15px; font-weight:700; letter-spacing:-.01em; margin:16px 0 6px; color:var(--dark); }
+  h2 .n{ color:var(--cyan); }
+  p.intro{ color:var(--soft); margin-bottom:8px; }
+  b{ font-weight:600; }
+
+  table{ width:100%; border-collapse:collapse; margin:6px 0 10px; }
+  th{ background:var(--black); color:#fff; font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; padding:6px 9px; text-align:left; }
+  th.c, td.c{ text-align:center; white-space:nowrap; }
+  td{ border-bottom:1px solid var(--line); padding:6px 9px; vertical-align:top; }
+  tr:nth-child(even) td{ background:#f7f9fc; }
+  td .tt{ font-weight:600; }
+  td .dd{ color:var(--soft); font-size:10px; }
+  .pts{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--cyandark); }
+
+  .box{ background:var(--light); border-left:4px solid var(--cyan); border-radius:0 10px 10px 0; padding:10px 14px; margin:8px 0; }
+  .box.warn{ background:#fff8e6; border-left-color:#f0a020; }
+  .box b{ color:var(--dark); }
+  .box ul{ margin:4px 0 0 16px; }
+  .box li{ margin:2px 0; }
+
+  .niveles{ display:flex; gap:8px; margin:8px 0 12px; }
+  .niv{ flex:1; border-radius:10px; padding:8px 11px; }
+  .niv .nh{ font-weight:700; font-size:11px; }
+  .niv .nx{ font-size:9.5px; color:var(--soft); margin-top:2px; }
+  .niv.l1{ background:#e6f7ec; } .niv.l1 .nh{ color:#0a7d2c; }
+  .niv.l2{ background:#fff3e0; } .niv.l2 .nh{ color:#b64400; }
+  .niv.l3{ background:#fdeef0; } .niv.l3 .nh{ color:#c0264a; }
+  .niv.l4{ background:#eceff4; } .niv.l4 .nh{ color:var(--soft); }
+
+  ol.preg{ margin:4px 0 10px 18px; }
+  ol.preg li{ margin:3px 0; color:var(--dark); }
+  ol.preg li em{ color:var(--soft); font-style:normal; font-size:9.5px; }
+
+  footer.doc{ margin-top:14px; border-top:1px solid var(--line); padding-top:8px; color:var(--soft); font-size:9px; display:flex; justify-content:space-between; }
+  .pagebreak{ page-break-before:always; }
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Tecsup</div>
+  <h1>Rúbrica de evaluación</h1>
+  <p>Bloque React y Proyecto Final Integrador · Escala vigesimal (0 a 20)</p>
+</header>
+
+<h2><span class="n">1.</span> Proyecto final: tema libre, requisitos mínimos</h2>
+<div class="box">
+El proyecto final es una aplicación web individual, de <b>tema libre</b> (comercio, catálogo de
+películas, recetario, biblioteca, gestión de eventos, entre otros). Independientemente del tema,
+la aplicación debe incluir los siguientes elementos, que corresponden al temario del bloque:
+<ul>
+<li>Una <b>entidad principal</b> listada desde una <b>API real</b> (pública o simulada: DummyJSON, TMDB, PokeAPI, etc.).</li>
+<li>Una <b>colección del usuario</b> sobre esa entidad (carrito, favoritos, lista de lectura, reservas), con persistencia.</li>
+<li>Un <b>formulario principal</b> con validación (checkout, registro, publicación).</li>
+<li><b>Sesión de usuario</b> con áreas protegidas.</li>
+<li>Aplicación <b>desplegada</b> y operativa.</li>
+</ul>
+</div>
+
+<h2><span class="n">2.</span> Componentes de la nota (20 pts)</h2>
+<table>
+  <tr><th>Componente</th><th class="c">Peso</th><th>Forma de medición</th></tr>
+  <tr><td><span class="tt">Proceso progresivo</span><div class="dd">avance clase a clase</div></td><td class="c"><span class="pts">3 pts</span> (15%)</td><td>Se evalúa el avance registrado en el repositorio después de cada clase: réplica de la sesión completa y <span class="mono">npm run build</span> sin errores. Puntaje por sesión: 2 = réplica completa y tareas intentadas · 1 = solo la réplica · 0 = sin entrega. Se promedian todas las sesiones y se escala a 3. El historial de commits, con sus fechas, acredita la autoría y la continuidad del trabajo.</td></tr>
+  <tr><td><span class="tt">Proyecto final</span><div class="dd">producto desplegado</div></td><td class="c"><span class="pts">11 pts</span> (55%)</td><td>Según la rúbrica de la sección 4 (12 temas del temario, calificados con la escala de la sección 3) y el bonus de arquitectura de la sección 5.</td></tr>
+  <tr><td><span class="tt">Sustentación</span><div class="dd">semanas de presentación</div></td><td class="c"><span class="pts">3 pts</span> (15%)</td><td>Exposición de 10 minutos (demostración de la aplicación y defensa de una decisión de diseño propia), seguida de una ronda de preguntas de 5 minutos. Total: 15 minutos por estudiante.</td></tr>
+  <tr><td><span class="tt">Dominio conceptual</span><div class="dd">comprensión de fundamentos</div></td><td class="c"><span class="pts">3 pts</span> (15%)</td><td>Dos o tres preguntas seleccionadas al azar del banco conceptual (sección 7), respondidas sobre el propio código durante la ronda de preguntas.</td></tr>
+</table>
+
+<div class="box warn"><b>Requisitos de recepción del proyecto final.</b> No otorgan puntaje; su
+incumplimiento impide la corrección:
+<ul>
+<li><span class="mono">npm run build</span> termina <b>sin errores</b>.</li>
+<li>La aplicación está <b>desplegada en Vercel</b> y operativa desde cualquier dispositivo.</li>
+<li>La consola del navegador se mantiene <b>sin errores</b> en el flujo principal.</li>
+</ul></div>
+
+<h2><span class="n">3.</span> Escala de calificación por tema</h2>
+<p class="intro">Cada tema de la sección 4 se califica con la siguiente escala. Los fundamentos
+(HTML semántico, CSS/Tailwind, responsive, accesibilidad) no se califican por separado: en React,
+el JSX es el HTML de la aplicación y Tailwind su CSS, por lo que se evalúan <b>en el tema donde
+aparecen</b>. Un formulario sin labels descuenta en Formularios; un listado que falla en móvil
+descuenta en Renderizado de listas.</p>
+<div class="niveles">
+  <div class="niv l1"><div class="nh">Logrado · 100%</div><div class="nx">Funciona de extremo a extremo, el código sigue las prácticas del curso y la construcción es correcta: semántica, responsive, accesible, lógica limpia.</div></div>
+  <div class="niv l2"><div class="nh">Parcial · 60%</div><div class="nx">Funciona, pero con deficiencias advertidas explícitamente durante el curso.</div></div>
+  <div class="niv l3"><div class="nh">Insuficiente · 20%</div><div class="nx">Presente pero no funcional, o con evidencia de falta de comprensión.</div></div>
+  <div class="niv l4"><div class="nh">Ausente · 0%</div><div class="nx">No se implementó.</div></div>
+</div>
+<div class="box"><b>Criterio acotado para TypeScript.</b> El plan de estudios incluyó una sola
+sesión de TypeScript, por lo que se exige únicamente: interfaces del dominio del proyecto (la
+entidad principal, el ítem de la colección) utilizadas efectivamente, y props tipadas en los
+componentes. No se exigen genéricos propios ni narrowing avanzado.</div>
+
+<h2><span class="n">4.</span> Rúbrica del proyecto final (11 pts): los 12 temas del temario</h2>
+<table>
+  <tr><th>Tema</th><th class="c">Pts</th><th>Nivel Logrado</th><th>Desciende a Parcial si</th></tr>
+  <tr><td class="tt">1 · Vite + JSX</td><td class="c"><span class="pts">0.50</span></td><td>Proyecto Vite propio que arranca y compila; JSX correcto: una raíz, <span class="mono">className</span>, etiquetas cerradas, datos entre llaves.</td><td>Avisos de JSX en consola; restos de la plantilla inicial.</td></tr>
+  <tr><td class="tt">2 · Componentes + Props</td><td class="c"><span class="pts">1.00</span></td><td>Un componente por archivo con responsabilidad única; props descendentes sin mutación; interfaces del dominio y props tipadas (criterio TS acotado, sección 3).</td><td>Componentes extensos con responsabilidades mezcladas; props sin tipar; estructura repetida que ameritaba un componente.</td></tr>
+  <tr><td class="tt">3 · Renderizado condicional y de listas</td><td class="c"><span class="pts">0.75</span></td><td><span class="mono">key</span> = id en toda lista; condicionales sin el error del <span class="mono">0</span> en <span class="mono">&amp;&amp;</span>; listado principal responsive a 360px; ítems semánticos (<span class="mono">article</span>, <span class="mono">img</span> con <span class="mono">alt</span>).</td><td><span class="mono">key</span> por índice; un "0" visible en pantalla; maquetación rota en móvil; estructura sin semántica.</td></tr>
+  <tr><td class="tt">4 · Eventos + useState</td><td class="c"><span class="pts">1.00</span></td><td>Manejadores correctamente asignados (referencia a la función, no su invocación); estado mínimo: ningún dato almacenado que pueda calcularse; derivados en el render; inmutabilidad en cada actualización.</td><td>Estados redundantes (totales almacenados aparte de la colección); mutaciones directas del estado.</td></tr>
+  <tr><td class="tt">5 · useEffect + ciclo de vida</td><td class="c"><span class="pts">1.00</span></td><td>Dependencias completas y correctas; función de limpieza en todo efecto que la requiere; la colección del usuario persiste tras recargar (localStorage con <span class="mono">try/catch</span> y validación de lo leído).</td><td>Efectos usados para calcular derivados; dependencias incompletas; suscripciones sin limpieza.</td></tr>
+  <tr><td class="tt">6 · API REST + estados de carga + manejo de errores</td><td class="c"><span class="pts">1.75</span></td><td>Datos de una API real; los tres estados implementados: carga (skeleton), error (mensaje claro y opción de reintentar) y vacío informativo; peticiones cancelables (<span class="mono">AbortController</span>) sin que la cancelación dispare el estado de error; ningún <span class="mono">catch</span> silencioso.</td><td>Pantallas en blanco durante la carga; errores visibles solo en consola; estados de interfaz que no reflejan la situación real.</td></tr>
+  <tr><td class="tt">7 · React Router</td><td class="c"><span class="pts">1.00</span></td><td>Detalle accesible por URL directa (<span class="mono">/entidad/:id</span>); página 404 propia; navegación sin recarga; rutas operativas tras recargar en producción.</td><td>El detalle solo abre navegando desde el listado; 404 del proveedor en lugar de la propia.</td></tr>
+  <tr><td class="tt">8 · Formularios controlados + validaciones</td><td class="c"><span class="pts">1.00</span></td><td>Formulario principal controlado (<span class="mono">value</span>/<span class="mono">onChange</span>); validación por campo con mensajes junto al input; envío bloqueado ante errores; cada input con su label y operable por teclado.</td><td>Solo validación nativa del navegador; mensajes genéricos; inputs sin label.</td></tr>
+  <tr><td class="tt">9 · Custom Hooks + Context + estado global</td><td class="c"><span class="pts">1.00</span></td><td>La colección del usuario administrada en Context (sin cadenas de props); al menos un custom hook propio con uso efectivo.</td><td>Context declarado pero con props aún en cadena; hooks propios sin uso real.</td></tr>
+  <tr><td class="tt">10 · JWT + sesión + rutas protegidas + variables de entorno</td><td class="c"><span class="pts">1.50</span></td><td>Autenticación real contra la API; el token se obtiene y <b>se utiliza</b> (<span class="mono">Authorization: Bearer</span>); sesión persistente con expiración; rutas protegidas que redirigen y retornan tras el login; configuración en <span class="mono">.env</span>, sin credenciales ni URLs codificadas en el fuente; los errores de autenticación se comunican al usuario.</td><td>Token almacenado pero nunca enviado; sesión sin expiración; ruta protegida que no retorna al destino original.</td></tr>
+  <tr><td class="tt">11 · Optimización de componentes</td><td class="c"><span class="pts">0.25</span></td><td><span class="mono">memo</span> o <span class="mono">lazy</span> aplicados con criterio y con evidencia (chunks separados en el build).</td><td>Uso indiscriminado de memo sin justificación técnica.</td></tr>
+  <tr><td class="tt">12 · Despliegue en Vercel</td><td class="c"><span class="pts">0.25</span></td><td>Aplicación operativa desde cualquier dispositivo, con rewrite de SPA configurado (toda ruta soporta recarga).</td><td>Desplegada, pero las rutas internas devuelven 404 al recargar.</td></tr>
+  <tr><td class="tt">Total</td><td class="c"><span class="pts">11.00</span></td><td colspan="2"></td></tr>
+</table>
+
+<div class="pagebreak"></div>
+
+<h2><span class="n">5.</span> Bonus de arquitectura (hasta +1.00; tope del componente: 11)</h2>
+<table>
+  <tr><th>Bonus</th><th class="c">Pts</th><th>Condiciones</th></tr>
+  <tr><td class="tt">Arquitectura hexagonal<div class="dd">puertos y adaptadores</div></td><td class="c"><span class="pts">+1.00</span></td><td>Dominio separado de React y de la infraestructura: lógica de negocio en módulos puros (sin imports de React), adaptadores para API y almacenamiento detrás de interfaces propias, y la interfaz de usuario como capa de entrega. Se otorga completo únicamente si el estudiante sustenta el propósito de cada capa durante la presentación; una estructura de carpetas sin separación real no califica.</td></tr>
+  <tr><td class="tt">Funcionalidad propia<div class="dd">alternativa al anterior</div></td><td class="c"><span class="pts">+0.50</span></td><td>Una funcionalidad, integración o sección no cubierta en el curso, operativa y sustentable.</td></tr>
+</table>
+
+<h2><span class="n">6.</span> Sustentación (3 pts): 10 minutos de exposición + 5 de preguntas</h2>
+<div class="box">
+<ul>
+<li><b>Exposición (10 min):</b> demostración de la aplicación en producción, recorriendo el flujo completo (listado, búsqueda, detalle, colección, sesión y formulario), y defensa de una decisión de diseño propia: el estudiante elige una pieza, estructura o solución que decidió él mismo y expone sus razones.</li>
+<li><b>Ronda de preguntas (5 min):</b> incluye las preguntas del banco conceptual (sección 7). El docente puede solicitar además una modificación acotada en vivo (por ejemplo: agregar un campo al contrato y propagarlo); en ese caso se evalúa el dominio del propio código, no la perfección del cambio.</li>
+</ul></div>
+
+<h2><span class="n">7.</span> Dominio conceptual (3 pts): preguntas de muestra</h2>
+<p class="intro">Durante la ronda de preguntas se formulan dos o tres, seleccionadas al azar, que
+se responden señalando el propio código. El banco completo mantiene este mismo estilo:</p>
+<ol class="preg">
+  <li>Señale en su <span class="mono">App</span> un <b>dato derivado</b>. ¿Por qué no es un <span class="mono">useState</span>? <em>(estado mínimo)</em></li>
+  <li>¿Por qué su función que agrega a la colección devuelve un array nuevo en lugar de usar <span class="mono">push</span>? <em>(inmutabilidad y referencias)</em></li>
+  <li>¿Qué ocurriría si su listado filtrado usara el índice como <span class="mono">key</span>? <em>(identidad de listas)</em></li>
+  <li>Muestre la <b>función de limpieza</b> de uno de sus efectos. ¿Qué sucede si se elimina? <em>(ciclo de vida)</em></li>
+  <li>Ponga su aplicación en modo Offline (DevTools). ¿Qué ve el usuario y por qué ese comportamiento es correcto? <em>(manejo de errores)</em></li>
+  <li>Muestre dónde viaja su token después del login. ¿Qué sucede cuando expira? <em>(JWT y sesión)</em></li>
+  <li>¿Por qué su colección está en Context y no descendiendo por props? ¿En qué caso no usaría Context? <em>(estado global)</em></li>
+  <li>¿Qué contiene su <span class="mono">.env</span> y por qué no se incluye en el repositorio? <em>(variables de entorno)</em></li>
+</ol>
+
+<h2><span class="n">8.</span> Condiciones generales</h2>
+<div class="box">
+<ul>
+<li><b>Originalidad:</b> el proyecto es individual, con tema, nombre e identidad propios. Las demostraciones del curso sirven de referencia, no de plantilla.</li>
+<li><b>Uso de documentación e IA:</b> se permite como apoyo del aprendizaje. Todo lo entregado debe poder explicarse y modificarse en vivo durante la sustentación; el banco conceptual y la modificación en vivo verifican precisamente esto.</li>
+<li><b>Estándar de entrega:</b> <span class="mono">npm run build</span> sin errores, commit y push, en todas las entregas del bloque sin excepción.</li>
+</ul></div>
+
+<footer class="doc">
+  <span>Bloque React · Bootcamp FrontEnd · Evaluación integral del bloque</span>
+  <span>Versión 1.2 · agosto 2026</span>
+</footer>
+
+</body>
+</html>
