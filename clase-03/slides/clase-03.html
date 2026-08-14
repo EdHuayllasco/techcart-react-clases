@@ -136,7 +136,7 @@
       </div>
       <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b></p>
     </div>
-    <div class="pageno">2 / 12</div>
+    <div class="pageno">2 / 13</div>
   </div>
 </section>
 
@@ -169,7 +169,7 @@
       <div class="codebox sm" style="max-width:520px">&lt;button <span class="u">onClick</span>={manejar}&gt;Agregar al carrito&lt;/button&gt;</div>
       <p class="lead" style="text-align:center;font-size:14.5px">La función que le pasas se llama <b>manejador</b>: una función tuya, de las de siempre.</p>
     </div>
-    <div class="pageno">3 / 12</div>
+    <div class="pageno">3 / 13</div>
   </div>
 </section>
 
@@ -187,7 +187,7 @@
       <div class="codebox sm" style="max-width:640px"><span class="c">// TypeScript ni compila la versión mala:</span><br />Type 'void' is not assignable to type 'MouseEventHandler…'</div>
       <p class="lead" style="text-align:center;font-size:14.5px">¿Con argumento? Una flecha que la envuelve: <span class="mono">onClick={() =&gt; saludar()}</span> — la flecha ES la función entregada.</p>
     </div>
-    <div class="pageno">4 / 12</div>
+    <div class="pageno">4 / 13</div>
   </div>
 </section>
 
@@ -210,7 +210,7 @@
       </div>
       <p class="lead" style="text-align:center;font-size:14.5px">Falta una caja que haga las dos cosas: <b>guardar el dato Y avisar</b>. La llevas leyendo desde la tarea de la clase 1.</p>
     </div>
-    <div class="pageno">5 / 12</div>
+    <div class="pageno">5 / 13</div>
   </div>
 </section>
 
@@ -230,7 +230,7 @@
         <div class="part"><div class="pk">useState(0)</div><div class="pv">el valor INICIAL — y los corchetes son la desestructuración de array de JS moderno</div></div>
       </div>
     </div>
-    <div class="pageno">6 / 12</div>
+    <div class="pageno">6 / 13</div>
   </div>
 </section>
 
@@ -247,11 +247,30 @@
       </div>
       <div class="war" style="max-width:660px"><b>Cada render es una foto.</b> <span class="mono">setContador</span> no modifica la constante: pide a React <b>re-ejecutar</b> la función, y en esa nueva ejecución <span class="mono">useState</span> entrega el valor nuevo. Constantes frescas, derivados recalculados: UI = f(datos), con el mecanismo a la vista.</div>
     </div>
-    <div class="pageno">7 / 12</div>
+    <div class="pageno">7 / 13</div>
   </div>
 </section>
 
-<!-- 8 · DIAPO 7: DE QUIÉN ES EL CARRITO -->
+
+<!-- 8 · DIAPO 7: TRES EXPERIMENTOS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">useState</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Para creerle al modelo: pruebas en vivo</div>
+    <h2 style="margin-bottom:14px">El estado, en <span class="cy">tres experimentos</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="grid6r">
+        <div class="rc"><div class="h">1 · la foto</div><div class="x"><span class="mono">set(...)</span> y <span class="mono">console.log</span> inmediato → sale el valor <b>VIEJO</b>. Tu manejador vive en la foto donde nació; el valor nuevo llega en el próximo render.</div></div>
+        <div class="rc"><div class="h">2 · el doble set</div><div class="x">dos <span class="mono">set(contador + 1)</span> seguidos → sube <b>UNO</b>: ambos leyeron la misma foto. La salida: la forma funcional <span class="mono">set((prev) =&gt; prev + 1)</span>.</div></div>
+        <div class="rc"><div class="h">3 · por instancia</div><div class="x">el mismo contador dentro de <span class="mono">ProductCard</span>: cada tarjeta cuenta <b>lo suyo</b>. ¿Memoria compartida? Se sube al ancestro común.</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Las tres sorpresas de <span class="mono">useState</span>, vistas hoy contigo — para que no te las lleves el sábado a solas.</p>
+    </div>
+    <div class="pageno">8 / 13</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: DE QUIÉN ES EL CARRITO -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Carrito</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
   <div class="body col">
@@ -268,7 +287,7 @@
       </div>
       <p class="lead" style="text-align:center;font-size:15px;max-width:680px">Regla: el estado vive en el <b>ancestro común</b> de quienes lo usan. Y antes que la pantalla, el contrato y la lógica: <span class="mono">ItemCarrito</span> en <span class="mono">tipos.ts</span> y <span class="mono">carrito.ts</span> con funciones <b>puras</b>.</p>
     </div>
-    <div class="pageno">8 / 12</div>
+    <div class="pageno">9 / 13</div>
   </div>
 </section>
 
@@ -290,7 +309,7 @@
       </div>
       <p class="lead" style="text-align:center;font-size:14.5px;max-width:700px"><span class="mono del" style="color:#c0264a">items.push(...)</span> &nbsp;jamás: React decide si repinta comparando <b>por referencia</b>. Mismo array = quizá no se entera.<br /><b>El estado no se muta — se reemplaza.</b> En fundamentos era disciplina; aquí es requisito.</p>
     </div>
-    <div class="pageno">9 / 12</div>
+    <div class="pageno">10 / 13</div>
   </div>
 </section>
 
@@ -310,7 +329,7 @@
         <div class="rc"><div class="h">no se muta</div><div class="x"><span class="mono">carrito.ts</span> devuelve arrays nuevos: React compara por referencia</div></div>
       </div>
     </div>
-    <div class="pageno">10 / 12</div>
+    <div class="pageno">11 / 13</div>
   </div>
 </section>
 
@@ -323,13 +342,13 @@
     <div class="fill col" style="justify-content:center">
       <div class="ex">
         <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>: el carrito naciendo en tu tienda, con la grabación al lado. Es LA tarea.</div></div>
-        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El agotado completo</b>: etiqueta de últimas unidades, tarjeta apagada (<span class="mono">opacity-50</span>) y botón deshabilitado — los tres estados visuales del stock, coherentes.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El favorito</b>: un corazón por tarjeta — <span class="mono">useState(false)</span> DENTRO de <span class="mono">ProductCard</span>, botón que alterna ♥/♡ con su <span class="mono">aria-label</span>. Márcalo en dos tarjetas: cada una recuerda lo suyo (experimento 3, hecho por ti).</div></div>
         <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Quitar del carrito</b>: tu <span class="mono">quitarItem</span> (<span class="mono">filter</span>) conectado a un botón ✕ por fila. Si no llegamos a la lista en clase, escríbela tú: un <span class="mono">map</span> sobre <span class="mono">carrito</span> con su <span class="mono">key</span>.</div></div>
         <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Cantidades que suben y bajan</b>: escribe <span class="mono">cambiarCantidad(items, id, cantidad)</span> — pura, inmutable, y en cantidad 0 quita la fila — y conéctala a botones + y −.</div></div>
-        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>La forma funcional</b>: investiga <span class="mono">setCarrito((prev) =&gt; …)</span> en es.react.dev y comenta qué problema resuelve y cuándo la usarías.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>La forma funcional, aplicada</b>: la viste en el experimento 2. Lee la página oficial y decide si tu <span class="mono">agregarAlCarrito</span> la necesita — aplícala o justifica por qué no.</div></div>
       </div>
     </div>
-    <div class="pageno">11 / 12</div>
+    <div class="pageno">12 / 13</div>
   </div>
 </section>
 
