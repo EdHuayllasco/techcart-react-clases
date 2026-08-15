@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 3 de React — La página reacciona (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+  .codebox .del{ text-decoration:line-through; opacity:.55; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .jrow{ display:flex; gap:16px; align-items:stretch; width:100%; justify-content:center; }
+  .jcol{ flex:1; max-width:360px; background:var(--white); border-radius:12px; padding:14px 18px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .jcol.viejo{ opacity:.72; } .jcol.nuevo{ border:2px solid var(--cyan); }
+  .jcol .lbl{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+  .jcol.viejo .lbl{ color:var(--soft); } .jcol.nuevo .lbl{ color:var(--cyan); }
+  .jcol ul{ list-style:none; } .jcol li{ font-size:13px; padding:4px 0; border-bottom:1px dashed var(--line); } .jcol li:last-child{ border-bottom:0; }
+  .jarrow{ display:flex; align-items:center; font-size:26px; color:var(--cyan); font-weight:700; }
+
+  .vsbox{ display:flex; gap:18px; width:100%; justify-content:center; }
+  .vscard{ flex:1; max-width:360px; border-radius:12px; padding:14px 18px; text-align:left; }
+  .vscard.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .vscard.bad{ background:#fdeef0; border:2px solid #c0264a; }
+  .vscard .op{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:700; }
+  .vscard.good .op{ color:#0a7d2c; } .vscard.bad .op{ color:#c0264a; }
+  .vscard .note{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  /* anatomía useState */
+  .parts{ display:flex; flex-direction:column; gap:7px; width:100%; max-width:640px; }
+  .part{ display:flex; gap:11px; align-items:baseline; background:var(--white); border-radius:9px; padding:8px 13px; box-shadow:0 4px 12px rgba(20,30,50,.05); }
+  .part .pk{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:700; color:var(--cyan); flex:0 0 150px; }
+  .part .pv{ font-size:12px; color:var(--soft); }
+
+  /* árbol */
+  .tree{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .tnode{ background:var(--black); color:var(--cyan); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; border-radius:10px; padding:8px 18px; }
+  .tnode small{ display:block; color:#8b95a5; font-size:9.5px; font-family:'IBM Plex Sans',sans-serif; font-weight:500; }
+  .tarrows{ font-size:20px; color:var(--cyan); font-weight:700; letter-spacing:.3em; }
+  .trow{ display:flex; gap:12px; }
+  .tleaf{ background:var(--white); border:2px solid var(--cyan); border-radius:10px; padding:7px 14px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--dark); box-shadow:0 4px 12px rgba(20,30,50,.06); }
+  .tleaf small{ display:block; color:var(--soft); font-size:9.5px; font-family:'IBM Plex Sans',sans-serif; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 3</div>
+    <h1>La página<br />reacciona</h1>
+    <p class="sub">Remate de listas y condicionales — y las dos piezas del día: eventos y useState. El carrito nace hoy.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + tareas destacadas</div></div><div class="tm">10'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate: listas y condicionales</div><div class="dd">solo lo pendiente · diapos: mazo de la clase 2 (láminas 7–10)</div></div><div class="tm">0–55'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">Eventos + useState</div><div class="dd">onClick · la memoria del componente · el carrito nace</div></div><div class="tm">~95'</div></div>
+        <div class="icard"><div class="n">→</div><div><div class="tt">Si el flujo se agota</div><div class="dd">seguimos con el material de la clase 4</div></div><div class="tm">—</div></div>
+        <div class="icard"><div class="n">C.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">25'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b></p>
+    </div>
+    <div class="pageno">2 / 13</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: ONCLICK -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Eventos</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Del addEventListener al prop</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">onClick</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="jrow">
+        <div class="jcol viejo">
+          <div class="lbl">Fundamentos</div>
+          <ul>
+            <li><span class="mono">querySelector</span> para encontrar</li>
+            <li><span class="mono">addEventListener('click', …)</span></li>
+            <li>delegación para no colgar cuarenta</li>
+          </ul>
+        </div>
+        <div class="jarrow">→</div>
+        <div class="jcol nuevo">
+          <div class="lbl">React</div>
+          <ul>
+            <li>el listener se declara <b>en el JSX</b></li>
+            <li>como un prop, en camelCase: <span class="mono">onClick</span></li>
+            <li>la delegación la hace React por dentro</li>
+          </ul>
+        </div>
+      </div>
+      <div class="codebox sm" style="max-width:520px">&lt;button <span class="u">onClick</span>={manejar}&gt;Agregar al carrito&lt;/button&gt;</div>
+      <p class="lead" style="text-align:center;font-size:14.5px">La función que le pasas se llama <b>manejador</b>: una función tuya, de las de siempre.</p>
+    </div>
+    <div class="pageno">3 / 13</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: FUNCIÓN, NO LLAMADA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Eventos</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La trampa de los paréntesis</div>
+    <h2 style="margin-bottom:14px">La <span class="cy">función</span>, no su llamada</h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">onClick={saludar}</div><div class="note">le pasas LA FUNCIÓN — React la ejecuta cuando llega el clic</div></div>
+        <div class="vscard bad"><div class="op">onClick={saludar()}</div><div class="note">la ejecutas TÚ, durante el render — y le pasas el resultado: nada</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:640px"><span class="c">// TypeScript ni compila la versión mala:</span><br />Type 'void' is not assignable to type 'MouseEventHandler…'</div>
+      <p class="lead" style="text-align:center;font-size:14.5px">¿Con argumento? Una flecha que la envuelve: <span class="mono">onClick={() =&gt; saludar()}</span> — la flecha ES la función entregada.</p>
+    </div>
+    <div class="pageno">4 / 13</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: EL CLIC QUE NO REPINTA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">useState</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La demo del día</div>
+    <h2 style="margin-bottom:14px">El clic que <span class="cy">no repinta</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox sm" style="max-width:640px">
+        <span class="p">let</span> contador = <span class="v">0</span>;<br /><br />
+        &lt;button <span class="u">onClick</span>={() =&gt; { contador = contador + 1; console.log(contador); }}&gt;<br />
+        &nbsp;&nbsp;Clics: {contador}<br />
+        &lt;/button&gt;
+      </div>
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">consola: 1, 2, 3…</div><div class="note">la variable SÍ cambia</div></div>
+        <div class="vscard bad"><div class="op">pantalla: 0</div><div class="note">nadie le pidió a React que repinte</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Falta una caja que haga las dos cosas: <b>guardar el dato Y avisar</b>. La llevas leyendo desde la tarea de la clase 1.</p>
+    </div>
+    <div class="pageno">5 / 13</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: USESTATE -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">useState</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La memoria del componente</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">useState</span>, desarmado</h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox" style="max-width:640px">
+        <span class="p">const</span> [<span class="t">contador</span>, <span class="u">setContador</span>] = <span class="u">useState</span>(<span class="v">0</span>);
+      </div>
+      <div class="parts">
+        <div class="part"><div class="pk">contador</div><div class="pv">el VALOR — de solo lectura, fresco en cada render</div></div>
+        <div class="part"><div class="pk">setContador</div><div class="pv">la FUNCIÓN para cambiarlo: guarda el dato Y pide el repintado</div></div>
+        <div class="part"><div class="pk">useState(0)</div><div class="pv">el valor INICIAL — y los corchetes son la desestructuración de array de JS moderno</div></div>
+      </div>
+    </div>
+    <div class="pageno">6 / 13</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: HOOK -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">useState</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Palabra nueva para el vocabulario del bloque</div>
+    <h2 style="margin-bottom:14px">Esto es un <span class="cy">hook</span></h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc"><div class="h">qué es</div><div class="x">una función de React que se <b>engancha</b> a tu componente para darle un poder. Todas empiezan con <span class="mono">use</span>. Esta le da <b>memoria</b>; vendrán más.</div></div>
+        <div class="rc"><div class="h">LA regla</div><div class="x">se llaman <b>arriba del componente, siempre</b> — nunca dentro de un <span class="mono">if</span>, un <span class="mono">map</span> o una función anidada. React los identifica por orden de llamada.</div></div>
+      </div>
+      <div class="war" style="max-width:660px"><b>Cada render es una foto.</b> <span class="mono">setContador</span> no modifica la constante: pide a React <b>re-ejecutar</b> la función, y en esa nueva ejecución <span class="mono">useState</span> entrega el valor nuevo. Constantes frescas, derivados recalculados: UI = f(datos), con el mecanismo a la vista.</div>
+    </div>
+    <div class="pageno">7 / 13</div>
+  </div>
+</section>
+
+
+<!-- 8 · DIAPO 7: TRES EXPERIMENTOS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">useState</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Para creerle al modelo: pruebas en vivo</div>
+    <h2 style="margin-bottom:14px">El estado, en <span class="cy">tres experimentos</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="grid6r">
+        <div class="rc"><div class="h">1 · la foto</div><div class="x"><span class="mono">set(...)</span> y <span class="mono">console.log</span> inmediato → sale el valor <b>VIEJO</b>. Tu manejador vive en la foto donde nació; el valor nuevo llega en el próximo render.</div></div>
+        <div class="rc"><div class="h">2 · el doble set</div><div class="x">dos <span class="mono">set(contador + 1)</span> seguidos → sube <b>UNO</b>: ambos leyeron la misma foto. La salida: la forma funcional <span class="mono">set((prev) =&gt; prev + 1)</span>.</div></div>
+        <div class="rc"><div class="h">3 · por instancia</div><div class="x">el mismo contador dentro de <span class="mono">ProductCard</span>: cada tarjeta cuenta <b>lo suyo</b>. ¿Memoria compartida? Se sube al ancestro común.</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Las tres sorpresas de <span class="mono">useState</span>, vistas hoy contigo — para que no te las lleves el sábado a solas.</p>
+    </div>
+    <div class="pageno">8 / 13</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: DE QUIÉN ES EL CARRITO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Carrito</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Dónde vive el estado</div>
+    <h2 style="margin-bottom:14px">¿De quién es <span class="cy">el carrito</span>?</h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="tree">
+        <div class="tnode">App<small>const [carrito, setCarrito] = useState&lt;ItemCarrito[]&gt;([])</small></div>
+        <div class="tarrows">↓ &nbsp; ↓</div>
+        <div class="trow">
+          <div class="tleaf">Header<small>lo MUESTRA (resumen)</small></div>
+          <div class="tleaf">ProductCard ×N<small>ESCRIBEN en él (onAgregar)</small></div>
+        </div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:680px">Regla: el estado vive en el <b>ancestro común</b> de quienes lo usan. Y antes que la pantalla, el contrato y la lógica: <span class="mono">ItemCarrito</span> en <span class="mono">tipos.ts</span> y <span class="mono">carrito.ts</span> con funciones <b>puras</b>.</p>
+    </div>
+    <div class="pageno">9 / 13</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: REFERENCIA NUEVA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Carrito</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Por qué la inmutabilidad es requisito</div>
+    <h2 style="margin-bottom:14px">Referencia nueva = <span class="cy">repintado</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="codebox sm" style="max-width:680px">
+        <span class="p">export function</span> <span class="u">agregarItem</span>(items: <span class="t">ItemCarrito[]</span>, producto: <span class="t">Producto</span>): <span class="t">ItemCarrito[]</span> {<br />
+        &nbsp;&nbsp;<span class="p">const</span> existente = items.<span class="u">find</span>((i) =&gt; i.id === producto.id);<br />
+        &nbsp;&nbsp;<span class="p">if</span> (existente) {<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="p">return</span> items.<span class="u">map</span>((i) =&gt; (i.id === producto.id ? { <span class="u">...i</span>, cantidad: i.cantidad + 1 } : i));<br />
+        &nbsp;&nbsp;}<br />
+        &nbsp;&nbsp;<span class="p">return</span> [<span class="u">...items</span>, { id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: 1 }];<br />
+        }
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px;max-width:700px"><span class="mono del" style="color:#c0264a">items.push(...)</span> &nbsp;jamás: React decide si repinta comparando <b>por referencia</b>. Mismo array = quizá no se entera.<br /><b>El estado no se muta — se reemplaza.</b> En fundamentos era disciplina; aquí es requisito.</p>
+    </div>
+    <div class="pageno">10 / 13</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">onClick</div><div class="x">eventos como props en camelCase; se pasa <b>la función</b>, nunca su llamada</div></div>
+        <div class="rc"><div class="h">useState</div><div class="x">guarda el dato Y pide el repintado — la variable normal no repinta</div></div>
+        <div class="rc"><div class="h">hook</div><div class="x">función <span class="mono">use…</span> de React; arriba del componente, jamás en un <span class="mono">if</span></div></div>
+        <div class="rc"><div class="h">cada render, una foto</div><div class="x">constantes frescas, derivados recalculados — UI = f(datos)</div></div>
+        <div class="rc"><div class="h">ancestro común</div><div class="x">el carrito vive en <span class="mono">App</span> y baja por props — incluidas props-función</div></div>
+        <div class="rc"><div class="h">no se muta</div><div class="x"><span class="mono">carrito.ts</span> devuelve arrays nuevos: React compara por referencia</div></div>
+      </div>
+    </div>
+    <div class="pageno">11 / 13</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>: el carrito naciendo en tu tienda, con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El favorito</b>: un corazón por tarjeta — <span class="mono">useState(false)</span> DENTRO de <span class="mono">ProductCard</span>, botón que alterna ♥/♡ con su <span class="mono">aria-label</span>. Márcalo en dos tarjetas: cada una recuerda lo suyo (experimento 3, hecho por ti).</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Quitar del carrito</b>: tu <span class="mono">quitarItem</span> (<span class="mono">filter</span>) conectado a un botón ✕ por fila. Si no llegamos a la lista en clase, escríbela tú: un <span class="mono">map</span> sobre <span class="mono">carrito</span> con su <span class="mono">key</span>.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Cantidades que suben y bajan</b>: escribe <span class="mono">cambiarCantidad(items, id, cantidad)</span> — pura, inmutable, y en cantidad 0 quita la fila — y conéctala a botones + y −.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>La forma funcional, aplicada</b>: la viste en el experimento 2. Lee la página oficial y decide si tu <span class="mono">agregarAlCarrito</span> la necesita — aplícala o justifica por qué no.</div></div>
+      </div>
+    </div>
+    <div class="pageno">12 / 13</div>
+  </div>
+</section>
+
+<!-- 12 · DIAPO 11: ANTICIPO -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Próxima clase — retomamos donde cortamos</span>
+    <h2>Los filtros <span style="color:var(--cyan)">cobran vida</span></h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#6b7686">// se remata el carrito: quitar, vaciar, mostrar/ocultar…</span><br />
+      <span style="color:#e6e9f2">const [categoriaActiva, setCategoriaActiva] = useState(</span><span style="color:var(--cyan)">'todas'</span><span style="color:#e6e9f2">)</span><br />
+      <span style="color:#e6e9f2">const visibles = productos.</span><span style="color:var(--cyan)">filter</span><span style="color:#e6e9f2">(…)  </span><span style="color:#6b7686">// derivado, no estado</span>
+    </div>
+    <p class="lead">La categoría con clics, el buscador que filtra mientras escribes — y la idea que ordena todo React: <b>guarda lo mínimo, deriva el resto</b>. Tu campo <span style="color:#fff">categoria</span> de la tarea entra en acción.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
