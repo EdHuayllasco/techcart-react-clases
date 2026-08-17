@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 4 de React — La tienda toca el mundo (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+  .codebox .del{ text-decoration:line-through; opacity:.55; }
+  .caplbl{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--dark); font-weight:600; margin-bottom:6px; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .vsbox{ display:flex; gap:18px; width:100%; justify-content:center; }
+  .vscard{ flex:1; max-width:360px; border-radius:12px; padding:14px 18px; text-align:left; }
+  .vscard.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .vscard.bad{ background:#fdeef0; border:2px solid #c0264a; }
+  .vscard .op{ font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:700; }
+  .vscard.good .op{ color:#0a7d2c; } .vscard.bad .op{ color:#c0264a; }
+  .vscard .note{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .cycle{ display:flex; align-items:center; gap:14px; justify-content:center; }
+  .cbox{ background:var(--white); border-radius:14px; padding:14px 18px; box-shadow:0 6px 18px rgba(20,30,50,.07); text-align:center; min-width:130px; }
+  .cbox .ct{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .cbox .cd{ font-size:11.5px; color:var(--soft); margin-top:5px; }
+  .carrow{ font-size:24px; color:var(--cyan); font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 4</div>
+    <h1>La tienda<br />toca el mundo</h1>
+    <p class="sub">useEffect: persistencia, dependencias y limpieza. El laboratorio del cronómetro. Y el salto grande: la API real con su adaptador.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + tareas destacadas</div></div><div class="tm">10'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate: carrito y filtros</div><div class="dd">solo lo pendiente · guion de la clase 3</div></div><div class="tm">0–90'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">useEffect</div><div class="dd">persistencia · dependencias · limpieza · StrictMode</div></div><div class="tm">~105'</div></div>
+        <div class="icard manos"><div class="n">L.</div><div><div class="tt">Laboratorio: el cronómetro</div><div class="dd">fuera del proyecto · 4 actos, 4 roturas</div></div><div class="tm">~45'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">La API real</div><div class="dd">el adaptador · fetch en un efecto · estados honestos</div></div><div class="tm">~90'</div></div>
+        <div class="icard"><div class="n">F.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">25'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
+    </div>
+    <div class="pageno">2 / 12</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: EL MUNDO FUERA DEL RENDER -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Efectos</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">F5 y el carrito muere · qué es un efecto colateral</div>
+    <h2 style="margin-bottom:14px">El mundo <span class="cy">fuera del render</span></h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="cycle">
+        <div class="cbox dark" style="background:var(--black)"><div class="ct">componente</div><div class="cd" style="color:#8b95a5">datos → JSX<br />función pura: calcula</div></div>
+        <div class="carrow">⇢</div>
+        <div class="cbox"><div class="ct">localStorage</div><div class="cd">guardar y leer</div></div>
+        <div class="cbox"><div class="ct">document.title</div><div class="cd">la pestaña</div></div>
+        <div class="cbox"><div class="ct">navegador / red</div><div class="cd">eventos · fetch</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15.5px;max-width:700px">Eso de la derecha es <b>tocar el mundo</b>: efectos colaterales. La regla de React: <b>el render calcula, no toca</b>.<br />Para tocar existe una pieza aparte, el segundo hook del curso: <span class="mono">useEffect</span>.</p>
+    </div>
+    <div class="pageno">3 / 12</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: ANATOMÍA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Efectos</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La pieza, desarmada</div>
+    <h2 style="margin-bottom:14px">Anatomía de <span class="mono cy">useEffect</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox" style="max-width:660px">
+        <span class="u">useEffect</span>(() =&gt; {<br />
+        &nbsp;&nbsp;<span class="c">// QUÉ hacer: tocar el mundo</span><br />
+        &nbsp;&nbsp;localStorage.setItem(<span class="v">CLAVE</span>, JSON.stringify(carrito));<br />
+        }, [<span class="t">carrito</span>]); <span class="c">// CUÁNDO: si esto cambió desde el render anterior</span>
+      </div>
+      <div class="cycle">
+        <div class="cbox"><div class="ct">1 · render</div><div class="cd">la función corre</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">2 · pinta</div><div class="cd">la pantalla primero</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">3 · efecto</div><div class="cd">el mundo después</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Es un hook: arriba del componente, dentro de la función, nunca en un <span class="mono">if</span>.</p>
+    </div>
+    <div class="pageno">4 / 12</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: LAS TRES FORMAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Efectos</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">El array de dependencias</div>
+    <h2 style="margin-bottom:14px">Las <span class="cy">tres formas</span> del array</h2>
+    <div class="fill col center" style="gap:16px">
+      <div class="trio">
+        <div class="tcrd"><div class="nm">sin array</div><div class="ds">corre tras <b>cada render</b>. Casi nunca lo quieres.</div></div>
+        <div class="tcrd"><div class="nm">[ ]</div><div class="ds">corre <b>una vez, al montar</b>. Para lo que se hace al arrancar.</div></div>
+        <div class="tcrd"><div class="nm">[carrito]</div><div class="ds"><b>reacciona</b>: corre cuando ese valor cambió.</div></div>
+      </div>
+      <div class="war" style="max-width:660px"><b>Dependencias honestas:</b> todo valor del render que el efecto usa, va en el array. Mentirle deja efectos congelados en el pasado, y ese bug muerde semanas después.</div>
+    </div>
+    <div class="pageno">5 / 12</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: STRICTMODE -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Limpieza</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La promesa más vieja del bloque, pagada</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">StrictMode</span> y la limpieza</h2>
+    <div class="fill col center" style="gap:14px">
+      <p class="lead" style="text-align:center;font-size:15.5px;max-width:700px">En desarrollo, StrictMode <b>monta → desmonta → monta</b>. Es un simulacro: si tu efecto no soporta correr dos veces, está mal cerrado, y te lo hace notar HOY, no en producción.</p>
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">escuchando / limpiado / escuchando</div><div class="note">con limpieza: cada encendido tiene su apagado. Queda UNA suscripción viva.</div></div>
+        <div class="vscard bad"><div class="op">escuchando / escuchando</div><div class="note">sin limpieza: dos suscripciones, la primera huérfana para siempre.</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15px"><b>Efecto que enciende, limpieza que apaga</b> — y la traza balanceada es tu prueba.</p>
+    </div>
+    <div class="pageno">6 / 12</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: EL ANTI-EFECTO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Doctrina</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La doctrina, con sus dos mitades</div>
+    <h2 style="margin-bottom:14px">El <span class="cy">anti-efecto</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="codebox sm" style="max-width:680px">
+        <span class="del">const [total, setTotal] = useState(0);</span><br />
+        <span class="del">useEffect(() =&gt; { setTotal(carrito.reduce(…)); }, [carrito]);</span><br /><br />
+        <span class="p">const</span> total = carrito.<span class="u">reduce</span>((s, i) =&gt; s + i.precio * i.cantidad, <span class="v">0</span>);
+      </div>
+      <p class="lead" style="text-align:center;font-size:15.5px;max-width:700px">Un efecto que calcula desde el estado: funciona, y son dos renders donde bastaba uno, un estado redundante y dos fuentes de verdad.<br /><b>Si se puede calcular, es derivado: ni estado ni efecto. El efecto es solo para tocar el mundo.</b></p>
+    </div>
+    <div class="pageno">7 / 12</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: DÓNDE VIVE UN FETCH -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">API</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">La API real · todo decidido con las reglas del curso</div>
+    <h2 style="margin-bottom:14px">¿Dónde vive <span class="cy">un fetch</span>?</h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc"><div class="h">los productos que llegan</div><div class="x">¿se pueden calcular? No: vienen de afuera → <b>estado</b></div></div>
+        <div class="rc"><div class="h">el acto de pedirlos</div><div class="x">¿toca el mundo? Sí: red → <b>efecto</b>, al montar: <span class="mono">[]</span></div></div>
+        <div class="rc"><div class="h">la forma inglesa de la API</div><div class="x"><span class="mono">title, price, thumbnail</span> → no sale de <span class="mono">api.ts</span>: el <b>adaptador</b> traduce al contrato</div></div>
+        <div class="rc"><div class="h">si la red falla</div><div class="x">el catálogo semilla responde y la tienda <b>avisa</b>: degradación elegante</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:640px">
+        <span class="del">useEffect(async () =&gt; { … }, [])</span> &nbsp;<span class="c">// Promise no es limpieza: no compila</span><br />
+        <span class="c">// el patrón: función async adentro, y llamarla</span>
+      </div>
+    </div>
+    <div class="pageno">8 / 12</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">efecto colateral</div><div class="x">tocar el mundo (disco, título, red). El render calcula; el efecto toca</div></div>
+        <div class="rc"><div class="h">dependencias</div><div class="x">sin array · [] · [x] — y honestas: lo que usas, lo declaras</div></div>
+        <div class="rc"><div class="h">persistencia</div><div class="x">guardar con [carrito] + leer al arrancar con aduana. El F5, vencido</div></div>
+        <div class="rc"><div class="h">limpieza</div><div class="x">efecto que enciende, limpieza que apaga — StrictMode caza al que no</div></div>
+        <div class="rc"><div class="h">adaptador</div><div class="x">la forma cruda no sale de api.ts; el contrato manda en la tienda</div></div>
+        <div class="rc"><div class="h">estados honestos</div><div class="x">EstadoCarga por fin dice la verdad: cargando, listo, respaldo</div></div>
+      </div>
+    </div>
+    <div class="pageno">9 / 12</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Ejercicio 1</b>: persistir <span class="mono">carritoAbierto</span> con su aduana (<span class="mono">typeof</span> para el booleano).</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Ejercicio 2</b>: el título completo de la pestaña, con las dependencias bien declaradas.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Ejercicio 4</b>: un campo nuevo de la API de punta a punta: contrato → adaptador → tarjeta.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Ejercicio 3 + la pregunta</b>: auditoría del anti-efecto en tu App, y tu hipótesis: ¿qué "limpia" la limpieza de un fetch?</div></div>
+      </div>
+      <p class="recess">Extra del laboratorio: <b>la cuenta regresiva</b> (arranca en 60, se detiene sola en 0, con pausar y reiniciar).</p>
+    </div>
+    <div class="pageno">10 / 12</div>
+  </div>
+</section>
+
+<!-- 11 · LÁMINA DEL LABORATORIO (apoyo, sin número de diapo en el guion) -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Lab</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">L</div></aside>
+  <div class="body col">
+    <div class="kicker">Fuera del proyecto · el ciclo completo de un efecto</div>
+    <h2 style="margin-bottom:14px">El cronómetro, <span class="cy">en 4 actos</span></h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc"><div class="h">1 · se congela en 1</div><div class="x">el intervalo vive en la primera foto → la <b>forma funcional es obligatoria</b>: <span class="mono">(s) =&gt; s + 1</span></div></div>
+        <div class="rc"><div class="h">2 · avanza de 2 en 2</div><div class="x">StrictMode montó doble y nadie limpió → <span class="mono">clearInterval(id)</span> en el return</div></div>
+        <div class="rc"><div class="h">3 · ocultar = desmontar</div><div class="x">la limpieza corre, y al volver arranca en 0: el estado muere con la instancia</div></div>
+        <div class="rc"><div class="h">4 · pausar y reanudar</div><div class="x">la limpieza también corre <b>antes de cada re-ejecución</b> del efecto (deps: <span class="mono">[corriendo]</span>)</div></div>
+      </div>
+    </div>
+    <div class="pageno">11 / 12</div>
+  </div>
+</section>
+
+<!-- 12 · DIAPO 10: ANTICIPO -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Próxima clase — retomamos donde cortamos</span>
+    <h2>¿Qué limpia la limpieza <span style="color:var(--cyan)">de un fetch</span>?</h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#6b7686">// mira la pestaña Network con atención:</span><br />
+      <span style="color:#e6e9f2">GET /products &nbsp;</span><span style="color:var(--cyan)">×2</span><span style="color:#6b7686">  ← ¿por qué DOBLE?</span><br /><br />
+      <span style="color:#e6e9f2">const controlador = new </span><span style="color:var(--cyan)">AbortController</span><span style="color:#e6e9f2">()</span>
+    </div>
+    <p class="lead">En el camino: la respuesta a la pregunta de la difícil, el <b>skeleton</b> para que la carga se vea de tienda grande, y el salto de página única a aplicación: <b>rutas</b>, el detalle con URL propia y una 404 nuestra.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
