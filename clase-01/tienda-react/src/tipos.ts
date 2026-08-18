@@ -5,6 +5,7 @@ export interface Producto {
     precio : number;
     imagen : string;
     stock : number;
+    categoria : string;
 }
 
 export type EstadoCarga = 'cargando' | 'listo' | 'error';
