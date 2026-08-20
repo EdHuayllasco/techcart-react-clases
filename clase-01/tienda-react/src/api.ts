@@ -27,12 +27,14 @@ function mapearProducto(productoCrudo : ProductoAPI) : Producto {
     }
 }
 
-export async function obtenerProductos() : Promise<{productos : Producto[]; esRespaldo: boolean}> {
+export async function obtenerProductos(signal? :AbortSignal) : Promise<{productos : Producto[]; esRespaldo: boolean}> {
     try {
-        const r = await fetch(`${BASE}/products?limit=24`);
+        const r = await fetch(`${BASE}/products?limit=24`, {signal}); //500
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
         const data = (await r.json()) as {products : ProductoAPI[]};
         return {productos : data.products.map(mapearProducto), esRespaldo: false}
-    }catch (error) {
+    } catch (error) {
+        if(error instanceof DOMException && error.name === 'AbortError') throw error;
         console.warn('API no disponible, usando el catalogo de semilla: ', error instanceof Error ? error.message : error);
         return { productos : respaldo , esRespaldo : true};
     }
