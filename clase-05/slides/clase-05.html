@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 5 de React — La tienda gana direcciones (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+  .rc.err{ border-left:3px solid #c0264a; } .rc.err .h{ color:#c0264a; font-family:'IBM Plex Sans',sans-serif; font-size:14px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .cycle{ display:flex; align-items:center; gap:14px; justify-content:center; }
+  .cbox{ background:var(--white); border-radius:14px; padding:14px 18px; box-shadow:0 6px 18px rgba(20,30,50,.07); text-align:center; min-width:130px; }
+  .cbox .ct{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .cbox .cd{ font-size:11.5px; color:var(--soft); margin-top:5px; }
+  .carrow{ font-size:24px; color:var(--cyan); font-weight:700; }
+
+  .urlbar{ display:flex; align-items:center; gap:10px; background:var(--white); border-radius:11px; padding:9px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); width:100%; max-width:640px; }
+  .urlbar .u1{ font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
+  .urlbar .u1 .base{ color:#9aa4b2; } .urlbar .u1 .path{ color:var(--cyan); }
+  .urlbar .u2{ margin-left:auto; font-size:12.5px; color:var(--soft); }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 5</div>
+    <h1>La tienda gana<br />direcciones</h1>
+    <p class="sub">AbortController y el skeleton cierran la API. React Router: cada pantalla con su URL. Y nace el checkout: el formulario controlado.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura + 3 correcciones</div><div class="dd">el punto de corte · bugs de la revisión del repo, en vivo</div></div><div class="tm">18'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate de la clase 4</div><div class="dd">solo lo pendiente · guion de la clase 4</div></div><div class="tm">0–90'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">Remate de la API</div><div class="dd">AbortController · el skeleton de carga</div></div><div class="tm">30'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">React Router</div><div class="dd">páginas · detalle por URL · 404 · Layout</div></div><div class="tm">70'</div></div>
+        <div class="icard manos"><div class="n">D.</div><div><div class="tt">El checkout nace</div><div class="dd">formulario controlado · validación por campo</div></div><div class="tm">55'</div></div>
+        <div class="icard"><div class="n">F.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">20'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
+    </div>
+    <div class="pageno">2 / 11</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: ABORTCONTROLLER -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">API</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La respuesta a la tarea difícil</div>
+    <h2 style="margin-bottom:14px">¿Qué limpia la limpieza de un fetch? <span class="cy">Lo cancela</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="cycle">
+        <div class="cbox"><div class="ct">new AbortController()</div><div class="cd">el controlador, en el efecto</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">signal</div><div class="cd">viaja como opción del fetch</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">abort()</div><div class="cd">la limpieza cancela el viaje</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:640px">
+        <span class="c">// Network, con StrictMode: monta y pide · desmonta y CANCELA · monta, pide y llega</span><br />
+        GET /products &nbsp;<span class="t">(canceled)</span> &nbsp;&nbsp;→&nbsp;&nbsp; GET /products &nbsp;<span class="v">200</span>
+      </div>
+      <div class="war" style="max-width:640px"><b>El detalle fino: <span class="mono">AbortError</span> NO es un fallo.</b> Es tu orden cumplida. El <span class="mono">catch</span> lo reconoce y lo deja pasar: ni estado de error ni respaldo — porque no pasó nada malo.</div>
+    </div>
+    <div class="pageno">3 / 11</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: SPA CON DIRECCIONES -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Router</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">De página única a aplicación</div>
+    <h2 style="margin-bottom:14px">Una <span class="cy">SPA</span> con direcciones</h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="urlbar"><div class="u1"><span class="base">tienda.com</span><span class="path">/</span></div><div class="u2">el catálogo</div></div>
+      <div class="urlbar"><div class="u1"><span class="base">tienda.com</span><span class="path">/producto/7</span></div><div class="u2">el detalle — un enlace que puedes compartir</div></div>
+      <div class="urlbar"><div class="u1"><span class="base">tienda.com</span><span class="path">/checkout</span></div><div class="u2">el pago</div></div>
+      <div class="urlbar"><div class="u1"><span class="base">tienda.com</span><span class="path">/loquesea</span></div><div class="u2">nuestra 404, no una pantalla en blanco</div></div>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:700px;margin-top:6px">Un solo HTML, muchas direcciones, <b>sin recargar jamás</b> — y el botón atrás por fin sabe de nosotros.<br />La pieza: <span class="mono">npm install react-router-dom</span> — la primera instalación desde la clase 1.</p>
+    </div>
+    <div class="pageno">4 / 11</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: LAS PIEZAS DEL ROUTER -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Router</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Seis piezas, un mapa</div>
+    <h2 style="margin-bottom:14px">Las piezas del <span class="cy">Router</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="grid6r">
+        <div class="rc"><div class="h">BrowserRouter</div><div class="x">envuelve todo en <span class="mono">main.tsx</span>: el que escucha la barra</div></div>
+        <div class="rc"><div class="h">Routes / Route</div><div class="x">el mapa: qué dirección muestra qué página</div></div>
+        <div class="rc"><div class="h">Link</div><div class="x">el enlace que <b>no recarga</b>: cambia la URL y la pantalla</div></div>
+        <div class="rc"><div class="h">useParams</div><div class="x">la parte variable de la URL (<span class="mono">:id</span>) — llega como <b>string</b></div></div>
+        <div class="rc"><div class="h">Outlet</div><div class="x">"aquí va la página que toque": el Layout se escribe UNA vez</div></div>
+        <div class="rc"><div class="h">path="*"</div><div class="x">el comodín: atrapa toda dirección desconocida → la 404</div></div>
+      </div>
+      <div class="war" style="max-width:660px"><b>La arquitectura nueva:</b> <span class="mono">components/</span> = piezas reutilizables · <span class="mono">pages/</span> = pantallas, una por dirección · <span class="mono">App</span> = el mapa. El estado se queda en App: las páginas van y vienen, <b>el carrito permanece</b>.</div>
+    </div>
+    <div class="pageno">5 / 11</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: ERRORES FRECUENTES DEL ROUTER -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Router</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> del Router</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · &lt;a href&gt; en vez de Link</div><div class="x">funciona… recargando la página entera: el estado muere, el carrito parpadea, la SPA deja de ser SPA</div></div>
+        <div class="rc err"><div class="h">2 · olvidar BrowserRouter</div><div class="x">todo lo del Router revienta al arrancar — y el mensaje de la consola te lo dice con nombre y apellido</div></div>
+        <div class="rc err"><div class="h">3 · comparar useParams sin convertir</div><div class="x">el id llega como string: <span class="mono">'7' === 7</span> es falso → <span class="mono">Number(id)</span> antes del <span class="mono">find</span></div></div>
+        <div class="rc err"><div class="h">4 · F5 en producción da 404</div><div class="x">en dev Vite resuelve las rutas; el servidor real necesita el rewrite de SPA — lo haremos al desplegar</div></div>
+      </div>
+    </div>
+    <div class="pageno">6 / 11</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: EL FORMULARIO CONTROLADO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Forms</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">El checkout nace</div>
+    <h2 style="margin-bottom:14px">El <span class="cy">formulario controlado</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="cycle">
+        <div class="cbox"><div class="ct">form (estado)</div><div class="cd">un objeto, cuatro campos</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">value</div><div class="cd">pinta el input: lo que ves es lo que el estado dice</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">onChange</div><div class="cd">cada tecla vuelve al estado</div></div>
+        <div class="carrow">⟲</div>
+      </div>
+      <div class="trio">
+        <div class="tcrd"><div class="nm">form</div><div class="ds">el objeto <span class="mono">DatosEnvio</span> — copiar con spread, pisar un campo</div></div>
+        <div class="tcrd"><div class="nm">tocados</div><div class="ds">qué campos visitó el usuario (<span class="mono">onBlur</span>) — esto SÍ es estado: no se puede calcular</div></div>
+        <div class="tcrd"><div class="nm">errores</div><div class="ds"><b>derivado</b>: <span class="mono">validar(form)</span> corre en cada render — nada que sincronizar</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px">Ese trío — form, tocados, errores derivados — es EL patrón de formularios de React.</p>
+    </div>
+    <div class="pageno">7 / 11</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: ERRORES FRECUENTES DE FORMULARIOS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Forms</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de formularios</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · value sin onChange</div><div class="x">el input queda CONGELADO: React manda y nadie actualiza el estado — la consola además lo advierte</div></div>
+        <div class="rc err"><div class="h">2 · errores en useState + efecto</div><div class="x">el anti-efecto de la clase pasada, versión formularios: los errores se <b>derivan</b>, no se sincronizan</div></div>
+        <div class="rc err"><div class="h">3 · validar solo con required / minLength</div><div class="x">los atributos nativos son una red, pero el usuario merece mensajes tuyos, por campo</div></div>
+        <div class="rc err"><div class="h">4 · olvidar preventDefault</div><div class="x">la página recarga, el estado muere y el pedido nunca existió</div></div>
+      </div>
+    </div>
+    <div class="pageno">8 / 11</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">cancelar</div><div class="x">la limpieza de un fetch lo cancela: controlador → signal → abort(). AbortError no es fallo</div></div>
+        <div class="rc"><div class="h">skeleton</div><div class="x">la espera con forma — y la única excepción legal de la key por índice</div></div>
+        <div class="rc"><div class="h">SPA con direcciones</div><div class="x">BrowserRouter · el mapa de Routes · Link que no recarga</div></div>
+        <div class="rc"><div class="h">useParams + 404</div><div class="x">la parte variable llega como string; path="*" atrapa lo desconocido</div></div>
+        <div class="rc"><div class="h">Layout + Outlet</div><div class="x">el marco se escribe una vez; toda página vive adentro</div></div>
+        <div class="rc"><div class="h">formulario controlado</div><div class="x">un objeto + tocados; los errores son un derivado, no un estado</div></div>
+      </div>
+    </div>
+    <div class="pageno">9 / 11</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Tu skeleton fiel</b>: mismos bloques que tu tarjeta real + <span class="mono">motion-reduce:animate-none</span>.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El detalle completo</b>: tu campo extra de la API en la página de detalle + el título de la pestaña con el nombre del producto.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Mis pedidos</b>: la página <span class="mono">/pedidos</span> que lee lo guardado por el checkout (con aduana) y lista fecha, items y total — con su estado vacío.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>El checkout protegido a medias</b>: con carrito vacío, mensaje con enlace al catálogo en vez del formulario. ¿Ruta, condicional o ambos? Justifica en un comentario.</div></div>
+      </div>
+    </div>
+    <div class="pageno">10 / 11</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: ANTICIPO -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Próxima clase — retomamos donde cortamos</span>
+    <h2>¿Cuántas manos tocan el carrito <span style="color:var(--cyan)">antes de llegar al botón?</span></h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#e6e9f2">App → Layout → Header → …</span><br />
+      <span style="color:#e6e9f2">App → Home → ProductCard → …</span><span style="color:#6b7686">  ← el carrito viaja por props a TODAS partes</span><br /><br />
+      <span style="color:#6b7686">// esa incomodidad tiene nombre y solución:</span> <span style="color:var(--cyan)">Context</span>
+    </div>
+    <p class="lead">El estado global de verdad, con nuestros propios hooks (<b>useCart</b>). Y con Context en la mano, el proyecto gana su arquitectura: <b>refactor guiado al estilo hexagonal</b> — el mismo que vale un punto extra en el proyecto final.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
