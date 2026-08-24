@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 6 de React — El carrito se hace global (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+  .rc.err{ border-left:3px solid #c0264a; } .rc.err .h{ color:#c0264a; font-family:'IBM Plex Sans',sans-serif; font-size:14px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .chain{ display:flex; flex-direction:column; gap:8px; width:100%; max-width:700px; }
+  .chrow{ display:flex; align-items:center; gap:8px; background:var(--white); border-radius:11px; padding:9px 14px; box-shadow:0 4px 14px rgba(20,30,50,.05); font-family:'IBM Plex Mono',monospace; font-size:13px; }
+  .chrow .nd{ background:var(--light); border-radius:6px; padding:3px 9px; font-weight:600; }
+  .chrow .nd.pass{ color:#c0264a; border:1px dashed #c0264a; background:#fdeef0; }
+  .chrow .ar{ color:var(--cyan); font-weight:700; }
+  .chrow .why{ margin-left:auto; font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--soft); text-align:right; }
+  .hex{ display:grid; grid-template-columns:1fr 1.1fr 1fr; gap:10px; width:100%; align-items:stretch; }
+  .hcard{ background:var(--white); border-radius:12px; padding:12px 14px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .hcard .hn{ font-weight:700; font-size:13px; color:var(--cyan); text-transform:uppercase; letter-spacing:.06em; }
+  .hcard .hf{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--dark); margin-top:5px; line-height:1.5; }
+  .hcard .hx{ font-size:11.5px; color:var(--soft); margin-top:4px; }
+  .hcard.core{ background:var(--black); color:#fff; text-align:center; padding:18px 14px; }
+  .hcard.core .hn{ color:var(--cyan); } .hcard.core .hf{ color:#e6e9f2; } .hcard.core .hx{ color:#8b95a5; }
+  .tok{ font-family:'IBM Plex Mono',monospace; font-size:12px; word-break:break-all; background:var(--black); border-radius:12px; padding:14px 18px; line-height:1.6; text-align:left; max-width:720px; }
+  .tok .h{ color:#ff8a80; } .tok .p{ color:#c3e88d; } .tok .s{ color:var(--cyan); } .tok .dot{ color:#fff; font-weight:700; }
+  .tree{ font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.6; text-align:left; background:var(--white); border-radius:12px; padding:12px 18px; box-shadow:0 5px 16px rgba(20,30,50,.06); white-space:nowrap; }
+  .tree .d{ color:var(--cyan); font-weight:700; } .tree .cm{ color:var(--soft); }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 6</div>
+    <h1>El carrito<br />se hace global</h1>
+    <p class="sub">Context y el primer hook propio. El refactor a arquitectura hexagonal. Y la tienda por fin sabe quién eres: login con un JWT real.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + tareas destacadas</div></div><div class="tm">8'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate de la clase 5</div><div class="dd">solo lo pendiente · guion de la clase 5</div></div><div class="tm">0–75'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">Context + useCart</div><div class="dd">el carrito global · la caída de las props</div></div><div class="tm">83'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">Arquitectura hexagonal</div><div class="dd">refactor guiado: dominio · infraestructura · aplicación · ui</div></div><div class="tm">45'</div></div>
+        <div class="icard manos"><div class="n">D.</div><div><div class="tt">La sesión nace</div><div class="dd">JWT · auth.ts · SesionContext · /login</div></div><div class="tm">58'</div></div>
+        <div class="icard"><div class="n">F.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">20'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
+    </div>
+    <div class="pageno">2 / 12</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: PROP DRILLING -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Context</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">El problema con nombre</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Prop drilling</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="chain">
+        <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd pass">Layout</span><span class="ar">→</span><span class="nd">Header</span><span class="why">el Layout no usa el resumen: solo lo carga</span></div>
+        <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd pass">Home</span><span class="ar">→</span><span class="nd">ProductCard</span><span class="why">Home no agrega nada: transporta onAgregar</span></div>
+        <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Detalle</span><span class="why">otra copia de onAgregar</span></div>
+        <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Checkout</span><span class="why">carrito, total, onVaciar… y la cadena crece con cada página</span></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:700px">Perforar componente tras componente para que un dato llegue al fondo. Los rojos <b>solo transportan</b>.<br />React tiene una pieza para datos que son de TODOS: <b>Context</b> — un canal directo del proveedor al consumidor.</p>
+    </div>
+    <div class="pageno">3 / 12</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: LAS PIEZAS DE CONTEXT -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Context</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Tres piezas y ya</div>
+    <h2 style="margin-bottom:12px">Las piezas de <span class="cy">Context</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="trio">
+        <div class="tcrd"><div class="nm">createContext</div><div class="ds">crea el <b>canal</b>. Vive fuera de todo componente: se crea UNA vez, a nivel de módulo.</div></div>
+        <div class="tcrd"><div class="nm">&lt;Provider value&gt;</div><div class="ds">el que <b>emite</b>. Envuelve el árbol (en main) y publica el valor: items, total, agregar…</div></div>
+        <div class="tcrd"><div class="nm">useContext</div><div class="ds">el que <b>sintoniza</b>. Cuarto hook del curso: desde cualquier componente de adentro, a cualquier profundidad.</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:660px">
+        <span class="p">export function</span> <span class="u">useCart</span>() {<br />
+        &nbsp;&nbsp;<span class="p">const</span> contexto = <span class="u">useContext</span>(CarritoContext);<br />
+        &nbsp;&nbsp;<span class="p">if</span> (!contexto) <span class="p">throw new</span> Error(<span class="v">'useCart solo funciona dentro de &lt;CarritoProvider&gt;.'</span>);<br />
+        &nbsp;&nbsp;<span class="p">return</span> contexto; <span class="c">// tu primer hook propio: sintoniza + aduana</span><br />
+        }
+      </div>
+      <div class="war" style="max-width:660px"><b>Regla de decisión:</b> Context es para el estado de TODA la aplicación (carrito, sesión, tema). Lo local — el buscador, un panel abierto, los productos que App pide — se queda donde vive. <b>Comparte lo mínimo.</b></div>
+    </div>
+    <div class="pageno">4 / 12</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: ERRORES FRECUENTES DE CONTEXT -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Context</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de Context</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · consumir fuera del Provider</div><div class="x">recibes el valor inicial (<span class="mono">null</span>) y algo revienta lejos del culpable — la aduana de <span class="mono">useCart</span> lo convierte en un mensaje exacto</div></div>
+        <div class="rc err"><div class="h">2 · olvidar envolver en main</div><div class="x">el mismo síntoma que el anterior; la misma aduana te salva y te dice qué falta</div></div>
+        <div class="rc err"><div class="h">3 · el contexto gigante</div><div class="x">carrito + productos + filtros + sesión en UN canal: cada tecla del buscador repinta a TODOS los consumidores → un contexto por asunto</div></div>
+        <div class="rc err"><div class="h">4 · createContext dentro del componente</div><div class="x">se crea un canal nuevo en cada render y los consumidores quedan sordos → siempre afuera, a nivel de módulo</div></div>
+      </div>
+    </div>
+    <div class="pageno">5 / 12</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: ARQUITECTURA HEXAGONAL -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Arquitectura</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">¿Dónde va cada cosa? · tu proyecto YA vive así</div>
+    <h2 style="margin-bottom:12px">Arquitectura <span class="cy">hexagonal</span></h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="hex">
+        <div class="hcard"><div class="hn">infraestructura</div><div class="hf">api.ts · datos.ts<br />pedidos.ts · almacen.ts · auth.ts</div><div class="hx">adaptadores: la red y el disco. La forma cruda no sale de aquí</div></div>
+        <div class="hcard core"><div class="hn">dominio</div><div class="hf">tipos.ts · carrito.ts</div><div class="hx">las reglas del negocio, puras: ni React, ni red, ni disco</div></div>
+        <div class="hcard"><div class="hn">ui</div><div class="hf">components/ · pages/<br />layout/ · formato.ts</div><div class="hx">lo que se ve. Consume la aplicación; nunca toca el disco directo</div></div>
+      </div>
+      <div class="hcard" style="max-width:520px"><div class="hn">aplicación</div><div class="hf">CarritoContext.tsx · useCart.ts · SesionContext.tsx · useSesion.ts</div><div class="hx">los casos de uso, con React: conectan dominio e infraestructura con la UI</div></div>
+      <p class="lead" style="text-align:center;font-size:14px">Hoy no cambiamos el código: le ponemos <b>nombre y carpeta</b> a lo que ya era cierto. La misma arquitectura que en el proyecto final vale <b>un punto extra</b>.</p>
+    </div>
+    <div class="pageno">6 / 12</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: EL MAPA DE TU PROYECTO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Arquitectura</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Después de la mudanza · build verde</div>
+    <h2 style="margin-bottom:12px">El mapa de <span class="cy">tu proyecto</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="tree">
+        src/<br />
+        &nbsp;&nbsp;<span class="d">dominio/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipos.ts · carrito.ts <span class="cm">← no importa de nadie</span><br />
+        &nbsp;&nbsp;<span class="d">infraestructura/</span>&nbsp;&nbsp;api.ts · datos.ts · pedidos.ts · almacen.ts · auth.ts <span class="cm">← importa del dominio</span><br />
+        &nbsp;&nbsp;<span class="d">aplicacion/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CarritoContext · useCart · SesionContext · useSesion <span class="cm">← importa dominio + infra</span><br />
+        &nbsp;&nbsp;<span class="d">ui/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components/ · pages/ · layout/ · formato.ts <span class="cm">← importa de todos</span><br />
+        &nbsp;&nbsp;App.tsx · main.tsx · index.css
+      </div>
+      <div class="war" style="max-width:660px"><b>La regla de dependencia:</b> las flechas apuntan HACIA el dominio, nunca al revés. Si <span class="mono">carrito.ts</span> quiere importar React o <span class="mono">api.ts</span>, algo está en el lugar equivocado. Refactorizar = cambiar la forma sin cambiar el comportamiento: se parte de build verde y se llega a build verde.</div>
+    </div>
+    <div class="pageno">7 / 12</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: JWT -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">La tienda por fin sabe quién eres</div>
+    <h2 style="margin-bottom:12px">El carné: <span class="cy">JWT</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="tok"><span class="h">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><span class="dot">.</span><span class="p">eyJpZCI6MSwidXNlcm5hbWUiOiJlbWlseXMiLCJmaXJzdE5hbWUiOiJFbWlseSIsImV4cCI6MTc1NTY0ODAwMH0</span><span class="dot">.</span><span class="s">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span></div>
+      <div class="trio">
+        <div class="tcrd" style="border-top-color:#ff8a80"><div class="nm" style="color:#e05a50">header</div><div class="ds">qué algoritmo firmó el carné</div></div>
+        <div class="tcrd" style="border-top-color:#8bc34a"><div class="nm" style="color:#6a9f2e">payload</div><div class="ds">tus datos impresos: id, nombre, <b>vencimiento</b>. Cualquiera puede leerlo: <b>no está cifrado</b></div></div>
+        <div class="tcrd"><div class="nm">firma</div><div class="ds">solo el servidor sabe hacerla. Cambia una letra y no cuadra: <b>nadie lo falsifica</b></div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px;max-width:720px">El servidor lo emite cuando demuestras quién eres (<span class="mono">POST /auth/login</span>). Desde entonces, cada petición privada viaja <b>con el carné en la mano</b>. Y como todo carné, <b>vence</b>.</p>
+    </div>
+    <div class="pageno">8 / 12</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: ERRORES FRECUENTES DE SESIÓN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de sesión</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · guardar la contraseña</div><div class="x">jamás, en ningún lado, ni en el estado más tiempo del necesario: se envía y se olvida. Lo que se guarda es el <b>token</b></div></div>
+        <div class="rc err"><div class="h">2 · creer que el token está cifrado</div><div class="x">está FIRMADO: cualquiera lo lee (pégalo en jwt.io). Nada secreto adentro</div></div>
+        <div class="rc err"><div class="h">3 · el token eterno</div><div class="x">todo token vence. La próxima clase el nuestro programa su propio cierre</div></div>
+        <div class="rc err"><div class="h">4 · el token en la URL</div><div class="x">las URLs quedan en historiales y logs. Viaja en el header <span class="mono">Authorization: Bearer</span> — lo estrenamos con <span class="mono">/auth/me</span></div></div>
+      </div>
+    </div>
+    <div class="pageno">9 / 12</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">prop drilling → Context</div><div class="x">createContext crea el canal, el Provider emite, useContext sintoniza — para el estado de todos</div></div>
+        <div class="rc"><div class="h">useCart</div><div class="x">tu primer hook propio: sintoniza el canal y monta la aduana del Provider</div></div>
+        <div class="rc"><div class="h">la caída de las props</div><div class="x">el que necesita, consume; nadie transporta. El Layout quedó sin props</div></div>
+        <div class="rc"><div class="h">hexagonal</div><div class="x">dominio puro al centro, adaptadores en los bordes; las flechas apuntan hacia adentro</div></div>
+        <div class="rc"><div class="h">JWT</div><div class="x">un carné: legible, infalsificable, con vencimiento. Nunca guarda secretos</div></div>
+        <div class="rc"><div class="h">useNavigate</div><div class="x">cuando navegar es consecuencia del código, no un clic del usuario</div></div>
+      </div>
+    </div>
+    <div class="pageno">10 / 12</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>formato.ts, ¿presentación o dominio?</b> El comentario argumentado arriba del archivo; si crees que es dominio, muévelo y defiéndelo.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>La página /pedidos con las capas</b>: vive en ui/pages, lee con <span class="mono">leerPedidos()</span> de infraestructura, jamás toca localStorage directo.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Favoritos globales</b>: FavoritosContext + useFavoritos calcados del carrito; corazón en la tarjeta, contador en el header, persistencia en <span class="mono">almacen.ts</span> con aduana.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>La pregunta</b>: pega <span class="mono">/checkout</span> sin sesión. Entra cualquiera. ¿Dónde pondrías el control y qué harías con el que no entró? Tu plan, en un comentario.</div></div>
+      </div>
+    </div>
+    <div class="pageno">11 / 12</div>
+  </div>
+</section>
+
+<!-- 12 · DIAPO 11: ANTICIPO -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Próxima clase — retomamos donde cortamos</span>
+    <h2>¿Quién vigila <span style="color:var(--cyan)">/checkout</span>?</h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#6b7686">// hoy: F5 y la sesión muere · /checkout recibe a cualquiera</span><br />
+      <span style="color:#e6e9f2">GET /auth/me &nbsp;</span><span style="color:var(--cyan)">Authorization: Bearer &lt;token&gt;</span><span style="color:#6b7686">  ← el carné, mostrado en la puerta</span><br />
+      <span style="color:#e6e9f2">&lt;Route element={&lt;</span><span style="color:var(--cyan)">RutaProtegida</span><span style="color:#e6e9f2"> /&gt;}&gt; … &lt;/Route&gt;</span>
+    </div>
+    <p class="lead">La sesión se vuelve seria: el token sobrevive al F5 con su aduana, se valida contra el servidor, <b>expira solo</b>, y las rutas privadas ganan un guardián. Después, la tienda aprende a no repintar de más: <b>memo, useMemo y lazy</b>.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
