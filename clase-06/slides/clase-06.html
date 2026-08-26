@@ -146,7 +146,7 @@
         <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Detalle</span><span class="why">otra copia de onAgregar</span></div>
         <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Checkout</span><span class="why">carrito, total, onVaciar… y la cadena crece con cada página</span></div>
       </div>
-      <p class="lead" style="text-align:center;font-size:15px;max-width:700px">Perforar componente tras componente para que un dato llegue al fondo. Los rojos <b>solo transportan</b>.<br />React tiene una pieza para datos que son de TODOS: <b>Context</b> — un canal directo del proveedor al consumidor.</p>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:700px">Perforar componente tras componente para que un dato llegue al fondo. Los rojos <b>solo transportan</b>.<br />React tiene una pieza para datos que son de TODOS: <b>Context</b> — el de arriba guarda el dato y el de abajo lo lee directo.</p>
     </div>
     <div class="pageno">3 / 12</div>
   </div>
@@ -160,15 +160,15 @@
     <h2 style="margin-bottom:12px">Las piezas de <span class="cy">Context</span></h2>
     <div class="fill col center" style="gap:12px">
       <div class="trio">
-        <div class="tcrd"><div class="nm">createContext</div><div class="ds">crea el <b>canal</b>. Vive fuera de todo componente: se crea UNA vez, a nivel de módulo.</div></div>
-        <div class="tcrd"><div class="nm">&lt;Provider value&gt;</div><div class="ds">el que <b>emite</b>. Envuelve el árbol (en main) y publica el valor: items, total, agregar…</div></div>
-        <div class="tcrd"><div class="nm">useContext</div><div class="ds">el que <b>sintoniza</b>. Cuarto hook del curso: desde cualquier componente de adentro, a cualquier profundidad.</div></div>
+        <div class="tcrd"><div class="nm">createContext</div><div class="ds">crea el <b>contexto</b>. Va fuera de todo componente: se crea UNA vez, a nivel de módulo.</div></div>
+        <div class="tcrd"><div class="nm">&lt;Provider value&gt;</div><div class="ds">el que <b>entrega el valor</b>. Envuelve a los componentes (en main) y lo deja disponible: items, total, agregar…</div></div>
+        <div class="tcrd"><div class="nm">useContext</div><div class="ds">el que <b>lee el valor</b>. Cuarto hook del curso: desde cualquier componente de adentro, a cualquier profundidad.</div></div>
       </div>
       <div class="codebox sm" style="max-width:660px">
         <span class="p">export function</span> <span class="u">useCart</span>() {<br />
         &nbsp;&nbsp;<span class="p">const</span> contexto = <span class="u">useContext</span>(CarritoContext);<br />
         &nbsp;&nbsp;<span class="p">if</span> (!contexto) <span class="p">throw new</span> Error(<span class="v">'useCart solo funciona dentro de &lt;CarritoProvider&gt;.'</span>);<br />
-        &nbsp;&nbsp;<span class="p">return</span> contexto; <span class="c">// tu primer hook propio: sintoniza + aduana</span><br />
+        &nbsp;&nbsp;<span class="p">return</span> contexto; <span class="c">// tu primer hook propio: lee el contexto y comprueba que exista</span><br />
         }
       </div>
       <div class="war" style="max-width:660px"><b>Regla de decisión:</b> Context es para el estado de TODA la aplicación (carrito, sesión, tema). Lo local — el buscador, un panel abierto, los productos que App pide — se queda donde vive. <b>Comparte lo mínimo.</b></div>
@@ -185,10 +185,10 @@
     <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de Context</h2>
     <div class="fill center">
       <div class="grid6r" style="grid-template-columns:1fr 1fr">
-        <div class="rc err"><div class="h">1 · consumir fuera del Provider</div><div class="x">recibes el valor inicial (<span class="mono">null</span>) y algo revienta lejos del culpable — la aduana de <span class="mono">useCart</span> lo convierte en un mensaje exacto</div></div>
-        <div class="rc err"><div class="h">2 · olvidar envolver en main</div><div class="x">el mismo síntoma que el anterior; la misma aduana te salva y te dice qué falta</div></div>
-        <div class="rc err"><div class="h">3 · el contexto gigante</div><div class="x">carrito + productos + filtros + sesión en UN canal: cada tecla del buscador repinta a TODOS los consumidores → un contexto por asunto</div></div>
-        <div class="rc err"><div class="h">4 · createContext dentro del componente</div><div class="x">se crea un canal nuevo en cada render y los consumidores quedan sordos → siempre afuera, a nivel de módulo</div></div>
+        <div class="rc err"><div class="h">1 · consumir fuera del Provider</div><div class="x">recibes el valor inicial (<span class="mono">null</span>) y algo revienta lejos del culpable — el <span class="mono">if</span> de <span class="mono">useCart</span> lo convierte en un mensaje exacto</div></div>
+        <div class="rc err"><div class="h">2 · olvidar envolver en main</div><div class="x">el mismo síntoma que el anterior; el mismo <span class="mono">if</span> te avisa qué falta</div></div>
+        <div class="rc err"><div class="h">3 · el contexto gigante</div><div class="x">carrito + productos + filtros + sesión en UN contexto: cada tecla del buscador repinta a TODOS los consumidores → un contexto por asunto</div></div>
+        <div class="rc err"><div class="h">4 · createContext dentro del componente</div><div class="x">se crea un contexto nuevo en cada render y los componentes dejan de recibir el valor → siempre afuera, a nivel de módulo</div></div>
       </div>
     </div>
     <div class="pageno">5 / 12</div>
@@ -240,15 +240,15 @@
   <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
   <div class="body col">
     <div class="kicker">La tienda por fin sabe quién eres</div>
-    <h2 style="margin-bottom:12px">El carné: <span class="cy">JWT</span></h2>
+    <h2 style="margin-bottom:12px"><span class="cy">JWT</span>: el token de sesión</h2>
     <div class="fill col center" style="gap:12px">
       <div class="tok"><span class="h">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><span class="dot">.</span><span class="p">eyJpZCI6MSwidXNlcm5hbWUiOiJlbWlseXMiLCJmaXJzdE5hbWUiOiJFbWlseSIsImV4cCI6MTc1NTY0ODAwMH0</span><span class="dot">.</span><span class="s">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span></div>
       <div class="trio">
-        <div class="tcrd" style="border-top-color:#ff8a80"><div class="nm" style="color:#e05a50">header</div><div class="ds">qué algoritmo firmó el carné</div></div>
+        <div class="tcrd" style="border-top-color:#ff8a80"><div class="nm" style="color:#e05a50">header</div><div class="ds">qué algoritmo firmó el token</div></div>
         <div class="tcrd" style="border-top-color:#8bc34a"><div class="nm" style="color:#6a9f2e">payload</div><div class="ds">tus datos impresos: id, nombre, <b>vencimiento</b>. Cualquiera puede leerlo: <b>no está cifrado</b></div></div>
         <div class="tcrd"><div class="nm">firma</div><div class="ds">solo el servidor sabe hacerla. Cambia una letra y no cuadra: <b>nadie lo falsifica</b></div></div>
       </div>
-      <p class="lead" style="text-align:center;font-size:14.5px;max-width:720px">El servidor lo emite cuando demuestras quién eres (<span class="mono">POST /auth/login</span>). Desde entonces, cada petición privada viaja <b>con el carné en la mano</b>. Y como todo carné, <b>vence</b>.</p>
+      <p class="lead" style="text-align:center;font-size:14.5px;max-width:720px">El servidor lo emite cuando demuestras quién eres (<span class="mono">POST /auth/login</span>). Desde entonces, cada petición privada lleva <b>el token en el header</b>. Y como toda sesión, <b>vence</b>.</p>
     </div>
     <div class="pageno">8 / 12</div>
   </div>
@@ -280,11 +280,11 @@
     <h2 style="margin-bottom:14px">Lo de hoy</h2>
     <div class="fill center">
       <div class="grid6r">
-        <div class="rc"><div class="h">prop drilling → Context</div><div class="x">createContext crea el canal, el Provider emite, useContext sintoniza — para el estado de todos</div></div>
-        <div class="rc"><div class="h">useCart</div><div class="x">tu primer hook propio: sintoniza el canal y monta la aduana del Provider</div></div>
+        <div class="rc"><div class="h">prop drilling → Context</div><div class="x">createContext crea el contexto, el Provider entrega el valor, useContext lo lee — para el estado de todos</div></div>
+        <div class="rc"><div class="h">useCart</div><div class="x">tu primer hook propio: lee el contexto y comprueba que el Provider exista</div></div>
         <div class="rc"><div class="h">la caída de las props</div><div class="x">el que necesita, consume; nadie transporta. El Layout quedó sin props</div></div>
         <div class="rc"><div class="h">hexagonal</div><div class="x">dominio puro al centro, adaptadores en los bordes; las flechas apuntan hacia adentro</div></div>
-        <div class="rc"><div class="h">JWT</div><div class="x">un carné: legible, infalsificable, con vencimiento. Nunca guarda secretos</div></div>
+        <div class="rc"><div class="h">JWT</div><div class="x">un token firmado: se puede leer, no se puede modificar, y vence. Nunca guarda secretos</div></div>
         <div class="rc"><div class="h">useNavigate</div><div class="x">cuando navegar es consecuencia del código, no un clic del usuario</div></div>
       </div>
     </div>
@@ -303,7 +303,7 @@
         <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, con la grabación al lado. Es LA tarea.</div></div>
         <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>formato.ts, ¿presentación o dominio?</b> El comentario argumentado arriba del archivo; si crees que es dominio, muévelo y defiéndelo.</div></div>
         <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>La página /pedidos con las capas</b>: vive en ui/pages, lee con <span class="mono">leerPedidos()</span> de infraestructura, jamás toca localStorage directo.</div></div>
-        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Favoritos globales</b>: FavoritosContext + useFavoritos calcados del carrito; corazón en la tarjeta, contador en el header, persistencia en <span class="mono">almacen.ts</span> con aduana.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Favoritos globales</b>: FavoritosContext + useFavoritos calcados del carrito; corazón en la tarjeta, contador en el header, persistencia en <span class="mono">almacen.ts</span> comprobando al leer.</div></div>
         <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>La pregunta</b>: pega <span class="mono">/checkout</span> sin sesión. Entra cualquiera. ¿Dónde pondrías el control y qué harías con el que no entró? Tu plan, en un comentario.</div></div>
       </div>
     </div>
@@ -319,10 +319,10 @@
     <h2>¿Quién vigila <span style="color:var(--cyan)">/checkout</span>?</h2>
     <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
       <span style="color:#6b7686">// hoy: F5 y la sesión muere · /checkout recibe a cualquiera</span><br />
-      <span style="color:#e6e9f2">GET /auth/me &nbsp;</span><span style="color:var(--cyan)">Authorization: Bearer &lt;token&gt;</span><span style="color:#6b7686">  ← el carné, mostrado en la puerta</span><br />
+      <span style="color:#e6e9f2">GET /auth/me &nbsp;</span><span style="color:var(--cyan)">Authorization: Bearer &lt;token&gt;</span><span style="color:#6b7686">  ← el token, validado por el servidor</span><br />
       <span style="color:#e6e9f2">&lt;Route element={&lt;</span><span style="color:var(--cyan)">RutaProtegida</span><span style="color:#e6e9f2"> /&gt;}&gt; … &lt;/Route&gt;</span>
     </div>
-    <p class="lead">La sesión se vuelve seria: el token sobrevive al F5 con su aduana, se valida contra el servidor, <b>expira solo</b>, y las rutas privadas ganan un guardián. Después, la tienda aprende a no repintar de más: <b>memo, useMemo y lazy</b>.</p>
+    <p class="lead">La sesión se vuelve seria: el token sobrevive al F5 (guardado y comprobado al leer), se valida contra el servidor, <b>expira solo</b>, y las rutas privadas ganan <b>RutaProtegida</b>. Después, la tienda aprende a no repintar de más: <b>memo, useMemo y lazy</b>.</p>
     <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
   </div>
 </section>
