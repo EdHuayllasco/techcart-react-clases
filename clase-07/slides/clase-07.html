@@ -118,7 +118,7 @@
       </div>
       <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
     </div>
-    <div class="pageno">2 / 11</div>
+    <div class="pageno">2 / 13</div>
   </div>
 </section>
 
@@ -143,7 +143,7 @@
         }, [usuario]);
       </div>
     </div>
-    <div class="pageno">3 / 11</div>
+    <div class="pageno">3 / 13</div>
   </div>
 </section>
 
@@ -169,7 +169,7 @@
       </div>
       <div class="war" style="max-width:680px"><b>Dos detalles:</b> <span class="mono">replace</span> reemplaza la entrada del historial (el botón atrás no rebota entre login y checkout) · <span class="mono">state={{ desde }}</span> viaja con la navegación sin aparecer en la URL: el login devuelve al usuario a donde iba.</div>
     </div>
-    <div class="pageno">4 / 11</div>
+    <div class="pageno">4 / 13</div>
   </div>
 </section>
 
@@ -187,7 +187,7 @@
         <div class="rc err"><div class="h">4 · subir el .env a GitHub</div><div class="x">una clave privada publicada ya no sirve, hay que cambiarla. <span class="mono">.gitignore</span> primero, commit después; <span class="mono">.env.example</span> sí se sube</div></div>
       </div>
     </div>
-    <div class="pageno">5 / 11</div>
+    <div class="pageno">5 / 13</div>
   </div>
 </section>
 
@@ -206,7 +206,7 @@
       </div>
       <div class="war" style="max-width:680px"><b>Se optimiza lo que se midió.</b> React DevTools → "Highlight updates" muestra qué se re-renderiza. Con 24 productos nada de esto se nota: se aprende aquí para usarlo donde sí hace falta.</div>
     </div>
-    <div class="pageno">6 / 11</div>
+    <div class="pageno">6 / 13</div>
   </div>
 </section>
 
@@ -224,7 +224,7 @@
         <div class="rc err"><div class="h">4 · lazy en TODO</div><div class="x">partir la tienda en cuarenta archivos hace que cada clic descargue algo. Se parte por rutas que no todos visitan (Checkout, Login), no Home</div></div>
       </div>
     </div>
-    <div class="pageno">7 / 11</div>
+    <div class="pageno">7 / 13</div>
   </div>
 </section>
 
@@ -250,11 +250,50 @@
       </div>
       <div class="war" style="max-width:640px"><b>Variables de entorno:</b> solo llegan al navegador las que empiezan con <span class="mono">VITE_</span>; se leen con <span class="mono">import.meta.env</span>; en producción se configuran en Vercel, no en el código. El <span class="mono">.env</span> no se sube; el <span class="mono">.env.example</span> sí.</div>
     </div>
-    <div class="pageno">8 / 11</div>
+    <div class="pageno">8 / 13</div>
   </div>
 </section>
 
-<!-- 9 · DIAPO 8: LO DE HOY -->
+<!-- 9 · DIAPO 8: VERCEL PASO A PASO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Producción</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">No se instala nada: todo desde vercel.com con tu cuenta de GitHub</div>
+    <h2 style="margin-bottom:12px">Vercel <span class="cy">paso a paso</span></h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">1.</div><div><div class="tt">Crear la cuenta</div><div class="dd">vercel.com → <b>Sign Up</b> → plan <b>Hobby</b> (gratis) → <b>Continue with GitHub</b> → Authorize</div></div></div>
+        <div class="icard"><div class="n">2.</div><div><div class="tt">Nuevo proyecto</div><div class="dd">Dashboard → <b>Add New…</b> → <b>Project</b></div></div></div>
+        <div class="icard"><div class="n">3.</div><div><div class="tt">Importar el repo</div><div class="dd">Import Git Repository → buscar tu repo → <b>Import</b> (si no aparece: Adjust GitHub App Permissions)</div></div></div>
+        <div class="icard manos"><div class="n">4.</div><div><div class="tt">Root Directory</div><div class="dd"><b>Edit</b> → clase-01 → <b>tienda-react</b> → Continue. Framework Preset: <b>Vite</b></div></div></div>
+        <div class="icard manos"><div class="n">5.</div><div><div class="tt">Variable de entorno</div><div class="dd">Environment Variables → Key <span class="mono">VITE_API_URL</span> · Value <span class="mono">https://dummyjson.com</span> → <b>Add</b></div></div></div>
+        <div class="icard"><div class="n">6.</div><div><div class="tt">Deploy</div><div class="dd"><b>Deploy</b> → Build Logs → Congratulations → <b>Continue to Dashboard</b> → Domains → tu URL <span class="mono">.vercel.app</span></div></div></div>
+      </div>
+      <p class="recess">Después: cada <b>git push</b> a main vuelve a desplegar solo (pestaña <b>Deployments</b>). Los nombres de los botones pueden variar; el orden no.</p>
+    </div>
+    <div class="pageno">9 / 13</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: ERRORES FRECUENTES AL DESPLEGAR -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Producción</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se provoca</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> al desplegar</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · el build falla en Vercel pero no en tu PC</div><div class="x">Linux distingue mayúsculas en los nombres de archivo; Windows no. El import debe coincidir LETRA POR LETRA con el archivo (<span class="mono">./layout/layout</span> ↔ <span class="mono">layout.tsx</span>). El registro dice cuál</div></div>
+        <div class="rc err"><div class="h">2 · "No package.json found"</div><div class="x">faltó el Root Directory: el proyecto está en <span class="mono">clase-01/tienda-react</span>, no en la raíz → Settings → General → Root Directory → Redeploy</div></div>
+        <div class="rc err"><div class="h">3 · abre pero no carga productos</div><div class="x">falta <span class="mono">VITE_API_URL</span>: Settings → Environment Variables → Add → Deployments → ⋯ → <b>Redeploy</b> (las variables se leen al construir, no en vivo)</div></div>
+        <div class="rc err"><div class="h">4 · 404 al recargar /producto/7</div><div class="x">falta <span class="mono">vercel.json</span>, o quedó dentro de <span class="mono">src</span> en vez de la raíz del proyecto, junto a package.json</div></div>
+      </div>
+    </div>
+    <div class="pageno">10 / 13</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: LO DE HOY -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
   <div class="body col">
@@ -270,11 +309,11 @@
         <div class="rc"><div class="h">URL pública</div><div class="x">la tienda en Vercel, con despliegue automático en cada push</div></div>
       </div>
     </div>
-    <div class="pageno">9 / 11</div>
+    <div class="pageno">11 / 13</div>
   </div>
 </section>
 
-<!-- 10 · DIAPO 9: 5 TAREAS -->
+<!-- 12 · DIAPO 11: 5 TAREAS -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
   <div class="body col">
@@ -289,11 +328,11 @@
         <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>"Recordarme"</b>: checkbox en el login; apagado → sesión en <span class="mono">sessionStorage</span>. El ÚNICO archivo que debería cambiar es <span class="mono">almacen.ts</span>.</div></div>
       </div>
     </div>
-    <div class="pageno">10 / 11</div>
+    <div class="pageno">12 / 13</div>
   </div>
 </section>
 
-<!-- 11 · DIAPO 10: LO QUE SIGUE -->
+<!-- 13 · DIAPO 12: LO QUE SIGUE -->
 <section class="slide next">
   <div class="grid"></div>
   <div class="inner">
