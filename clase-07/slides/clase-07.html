@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 7 de React — La sesión se vuelve seria (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+  .rc.err{ border-left:3px solid #c0264a; } .rc.err .h{ color:#c0264a; font-family:'IBM Plex Sans',sans-serif; font-size:14px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .cycle{ display:flex; align-items:center; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .cbox{ background:var(--white); border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(20,30,50,.07); text-align:center; min-width:120px; }
+  .cbox .ct{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13.5px; color:var(--cyan); }
+  .cbox .cd{ font-size:11.5px; color:var(--soft); margin-top:5px; }
+  .cbox.dark{ background:var(--black); } .cbox.dark .cd{ color:#8b95a5; }
+  .carrow{ font-size:22px; color:var(--cyan); font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 7</div>
+    <h1>La sesión<br />se vuelve seria</h1>
+    <p class="sub">La sesión sobrevive al F5, se valida con el servidor y expira sola. Rutas protegidas. Variables de entorno. Y la tienda en producción.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Sin repasos largos: retomamos y seguimos</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + los planes de los alumnos</div></div><div class="tm">8'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate de la clase 6</div><div class="dd">solo lo pendiente · guion de la clase 6</div></div><div class="tm">0–75'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">La sesión completa</div><div class="dd">guardar · validar con /auth/me · expirar · RutaProtegida · .env</div></div><div class="tm">80'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">No repintar de más</div><div class="dd">medir primero · memo · useMemo · lazy</div></div><div class="tm">60'</div></div>
+        <div class="icard manos"><div class="n">D.</div><div><div class="tt">Producción</div><div class="dd">vercel.json · despliegue en Vercel · URL pública</div></div><div class="tm">35'</div></div>
+        <div class="icard"><div class="n">F.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">20'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
+    </div>
+    <div class="pageno">2 / 11</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: LA SESIÓN QUE SOBREVIVE -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Tres cosas que una sesión tiene que hacer</div>
+    <h2 style="margin-bottom:14px">La sesión que <span class="cy">sobrevive</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="trio">
+        <div class="tcrd"><div class="nm">1 · GUARDAR</div><div class="ds">el usuario se guarda en el disco (<span class="mono">almacen.ts</span>) y se lee al arrancar <b>comprobando su forma</b>: token de texto, vencimiento numérico. Si no, no hay sesión.</div></div>
+        <div class="tcrd"><div class="nm">2 · VALIDAR</div><div class="ds">un token guardado puede ser viejo o estar anulado. Quien decide es el servidor: <span class="mono">GET /auth/me</span> con el token en el header <span class="mono">Authorization: Bearer</span>.</div></div>
+        <div class="tcrd"><div class="nm">3 · EXPIRAR</div><div class="ds">guardamos <b>cuándo</b> vence (<span class="mono">expiraEn</span>) y un <span class="mono">setTimeout</span> cierra la sesión en ese instante. La limpieza del efecto lo cancela.</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:680px">
+        <span class="p">useEffect</span>(() =&gt; {<br />
+        &nbsp;&nbsp;<span class="p">if</span> (!usuario) <span class="p">return</span>;<br />
+        &nbsp;&nbsp;<span class="c">// 1. si ya venció → cerrar · 2. obtenerPerfil(token) → si el servidor lo rechaza, cerrar</span><br />
+        &nbsp;&nbsp;<span class="c">// 3. setTimeout(cerrar, expiraEn - Date.now())</span><br />
+        &nbsp;&nbsp;<span class="p">return</span> () =&gt; { controlador.abort(); clearTimeout(temporizador); };<br />
+        }, [usuario]);
+      </div>
+    </div>
+    <div class="pageno">3 / 11</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: RUTAPROTEGIDA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">La pregunta de la tarea: ¿quién vigila /checkout?</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">RutaProtegida</span>: una ruta padre que revisa la sesión</h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="cycle">
+        <div class="cbox"><div class="ct">/checkout</div><div class="cd">el usuario pide una ruta privada</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox dark"><div class="ct">¿hay sesión?</div><div class="cd">useSesion().usuario</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">sí: &lt;Outlet /&gt;</div><div class="cd">muestra la página</div></div>
+        <div class="cbox"><div class="ct">no: &lt;Navigate /&gt;</div><div class="cd">manda a /login con <span class="mono">state.desde</span></div></div>
+      </div>
+      <div class="codebox sm" style="max-width:680px">
+        &lt;Route element={&lt;<span class="t">RutaProtegida</span> /&gt;}&gt; <span class="c">// ruta padre sin path</span><br />
+        &nbsp;&nbsp;&lt;Route path=<span class="v">"/checkout"</span> element={&lt;Checkout /&gt;} /&gt; <span class="c">// toda ruta de adentro queda protegida</span><br />
+        &lt;/Route&gt;
+      </div>
+      <div class="war" style="max-width:680px"><b>Dos detalles:</b> <span class="mono">replace</span> reemplaza la entrada del historial (el botón atrás no rebota entre login y checkout) · <span class="mono">state={{ desde }}</span> viaja con la navegación sin aparecer en la URL: el login devuelve al usuario a donde iba.</div>
+    </div>
+    <div class="pageno">4 / 11</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: ERRORES FRECUENTES DE SESIÓN II -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Sesión</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de sesión II</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · guardar el token sin validarlo nunca</div><div class="x">que esté en el disco no garantiza nada; un token que el servidor ya anuló seguiría "logueado" para siempre → <span class="mono">/auth/me</span> al arrancar</div></div>
+        <div class="rc err"><div class="h">2 · confiar solo en expiraEn</div><div class="x">sirve para cerrar a tiempo en el navegador, pero quien decide si el token vale es el servidor → las dos comprobaciones juntas</div></div>
+        <div class="rc err"><div class="h">3 · Navigate sin replace</div><div class="x">el historial queda con una entrada de más y el botón atrás rebota entre el login y la página protegida</div></div>
+        <div class="rc err"><div class="h">4 · subir el .env a GitHub</div><div class="x">una clave privada publicada ya no sirve, hay que cambiarla. <span class="mono">.gitignore</span> primero, commit después; <span class="mono">.env.example</span> sí se sube</div></div>
+      </div>
+    </div>
+    <div class="pageno">5 / 11</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: RENDER NO ES PINTAR -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Rendimiento</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Primero se mide, después se optimiza</div>
+    <h2 style="margin-bottom:12px">Render <span class="cy">no es</span> pintar</h2>
+    <div class="fill col center" style="gap:12px">
+      <p class="lead" style="text-align:center;font-size:15px;max-width:720px">Re-renderizar = React ejecuta la función del componente y <b>compara</b> el resultado con el anterior. Pintar = tocar el DOM, solo donde hubo diferencia. Re-renderizar es barato; React ya minimiza lo caro. Entonces, ¿cuándo optimizar? En tres casos concretos:</p>
+      <div class="trio">
+        <div class="tcrd"><div class="nm">memo(Componente)</div><div class="ds">un componente se re-renderiza porque su PADRE cambió, aunque sus props sean las mismas. <span class="mono">memo</span> lo salta si cada prop es el mismo valor u objeto. No bloquea los cambios de Context.</div></div>
+        <div class="tcrd"><div class="nm">useMemo(fn, deps)</div><div class="ds">un cálculo pesado se repite en cada render con los mismos datos. Recalcula solo si cambió algo del array; el resultado sigue siendo un valor calculado, no estado.</div></div>
+        <div class="tcrd"><div class="nm">lazy + Suspense</div><div class="ds">código que el usuario tal vez nunca visite se descarga igual. <span class="mono">lazy(() =&gt; import(...))</span> lo parte en un archivo aparte; <span class="mono">Suspense</span> muestra algo mientras llega.</div></div>
+      </div>
+      <div class="war" style="max-width:680px"><b>Se optimiza lo que se midió.</b> React DevTools → "Highlight updates" muestra qué se re-renderiza. Con 24 productos nada de esto se nota: se aprende aquí para usarlo donde sí hace falta.</div>
+    </div>
+    <div class="pageno">6 / 11</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: ERRORES FRECUENTES DE OPTIMIZACIÓN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Rendimiento</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de optimización</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · optimizar sin medir</div><div class="x"><span class="mono">memo</span> en todo "por si acaso" suma comparaciones que cuestan más de lo que ahorran. Primero Highlight updates, después la herramienta</div></div>
+        <div class="rc err"><div class="h">2 · useMemo con dependencias incompletas</div><div class="x">usar adentro una variable que no está en el array devuelve resultados viejos. El linter lo marca: hazle caso</div></div>
+        <div class="rc err"><div class="h">3 · lazy sin Suspense</div><div class="x">React no sabe qué mostrar mientras descarga el archivo y muestra un error que lo dice claramente</div></div>
+        <div class="rc err"><div class="h">4 · lazy en TODO</div><div class="x">partir la tienda en cuarenta archivos hace que cada clic descargue algo. Se parte por rutas que no todos visitan (Checkout, Login), no Home</div></div>
+      </div>
+    </div>
+    <div class="pageno">7 / 11</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: PRODUCCIÓN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Producción</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">La tienda en internet, con dirección propia</div>
+    <h2 style="margin-bottom:12px"><span class="cy">Producción</span> en Vercel</h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="cycle">
+        <div class="cbox"><div class="ct">npm run build</div><div class="cd">genera <span class="mono">dist/</span>: un index.html + los .js</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">vercel.json</div><div class="cd">rewrite: toda URL sirve index.html</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">Vercel</div><div class="cd">Root Directory + variable VITE_API_URL</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox dark"><div class="ct">URL pública</div><div class="cd">y se redespliega con cada push</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:640px">
+        <span class="c">// vercel.json — el servidor no conoce tus rutas: /producto/7 no es un archivo</span><br />
+        { <span class="v">"rewrites"</span>: [{ <span class="v">"source"</span>: <span class="v">"/(.*)"</span>, <span class="v">"destination"</span>: <span class="v">"/index.html"</span> }] }
+      </div>
+      <div class="war" style="max-width:640px"><b>Variables de entorno:</b> solo llegan al navegador las que empiezan con <span class="mono">VITE_</span>; se leen con <span class="mono">import.meta.env</span>; en producción se configuran en Vercel, no en el código. El <span class="mono">.env</span> no se sube; el <span class="mono">.env.example</span> sí.</div>
+    </div>
+    <div class="pageno">8 / 11</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">sesión completa</div><div class="x">se guarda comprobando los datos, se valida con /auth/me (Authorization: Bearer) y expira sola con un temporizador</div></div>
+        <div class="rc"><div class="h">RutaProtegida</div><div class="x">ruta padre que protege todo lo de adentro: Outlet si hay sesión, Navigate con replace y state si no</div></div>
+        <div class="rc"><div class="h">variables de entorno</div><div class="x">VITE_, import.meta.env, .env fuera del repo y .env.example adentro</div></div>
+        <div class="rc"><div class="h">render no es pintar</div><div class="x">memo evita el re-render por el padre, useMemo el recálculo, lazy la descarga — siempre después de medir</div></div>
+        <div class="rc"><div class="h">rewrite de SPA</div><div class="x">el servidor no conoce tus rutas: index.html para todo</div></div>
+        <div class="rc"><div class="h">URL pública</div><div class="x">la tienda en Vercel, con despliegue automático en cada push</div></div>
+      </div>
+    </div>
+    <div class="pageno">9 / 11</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: build sin errores + push + la URL de Vercel en el README</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, y pega la URL pública de tu tienda al inicio del README. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>Proteger /pedidos</b>: la página entra dentro de <span class="mono">RutaProtegida</span> y el enlace "Mis pedidos" solo aparece con sesión iniciada.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El nombre de la tienda como variable</b>: <span class="mono">VITE_NOMBRE_TIENDA</span> en .env y .env.example, tipada, usada en el Header y el título; configurada también en Vercel.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Skeleton como fallback por ruta</b>: Detalle con <span class="mono">lazy</span> y un <span class="mono">Suspense</span> propio cuyo fallback sea una silueta del detalle. ¿Se puede anidar Suspense?</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>"Recordarme"</b>: checkbox en el login; apagado → sesión en <span class="mono">sessionStorage</span>. El ÚNICO archivo que debería cambiar es <span class="mono">almacen.ts</span>.</div></div>
+      </div>
+    </div>
+    <div class="pageno">10 / 11</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: LO QUE SIGUE -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Lo que sigue</span>
+    <h2>El proyecto final, <span style="color:var(--cyan)">con todo lo aprendido</span></h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#e6e9f2">componentes · estado · efectos · API · rutas · formularios</span><br />
+      <span style="color:#e6e9f2">Context · hooks propios · sesión con JWT · rendimiento · producción</span><br />
+      <span style="color:#6b7686">// tema libre (no tiene que ser una tienda) · arquitectura hexagonal = punto extra</span>
+    </div>
+    <p class="lead">La próxima clase: la rúbrica en pantalla, elegir tema y armar la base del proyecto desde cero con las cuatro carpetas. <b>Trae tres ideas de proyecto</b> y la URL de tu tienda en el README.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
