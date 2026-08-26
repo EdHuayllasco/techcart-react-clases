@@ -1,15 +1,11 @@
 import { Link } from "react-router-dom";
-import type { DatosEnvio, ItemCarrito } from "../tipos";
+import type { DatosEnvio } from "../tipos";
+import { useCart } from "../context/useCart";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import formatearPrecio from "../formato";
 import { guardarPedido } from "../pedidos";
 
 
-interface Props {
-    carrito : ItemCarrito[];
-    total : number;
-    onVaciar : () => void 
-}
 type Errores = Partial<Record<keyof DatosEnvio, string>>;
 function validar(form : DatosEnvio) : Errores {
     const errores : Errores = {};
@@ -19,7 +15,8 @@ function validar(form : DatosEnvio) : Errores {
     if(!/^\+?[1-9]\d{1,14}$/.test(form.telefono)) errores.telefono  = 'Escribe almenos 7 digitos';
     return errores;
 }
-export function Checkout({carrito, total, onVaciar} : Props) {
+export function Checkout() {
+    const { items: carrito, total, vacia } = useCart();
     const [form, setForm] = useState<DatosEnvio>({nombre: '', email:'', direccion:'', telefono:''});
     const [tocados, setTocados] = useState<Partial<Record<keyof DatosEnvio, boolean>>>({});
     const [numeroPedido, setNumeroPedido] = useState(0);
@@ -41,7 +38,7 @@ export function Checkout({carrito, total, onVaciar} : Props) {
         };
         guardarPedido(pedido);
         setNumeroPedido(pedido.id);
-        onVaciar()
+        vacia()
     }
     if(numeroPedido !== 0){
         return (

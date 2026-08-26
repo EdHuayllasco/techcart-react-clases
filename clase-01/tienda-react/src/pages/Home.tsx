@@ -6,13 +6,12 @@ interface Props {
     productos : Producto[];
     esRespaldo : boolean;
     estado : EstadoCarga;
-    onAgregar : (producto : Producto) => void;
     onReintar : () => void;
 }
 
 const nombreTienda = 'tech-cart'
 
-export default function App({productos , esRespaldo, estado , onReintar, onAgregar} : Props) {
+export default function Home({productos , esRespaldo, estado , onReintar} : Props) {
   const [categoriaActiva, setCategoriaActiva] = useState('todas');
   const [termino, setTermino] = useState('');
 
@@ -77,7 +76,7 @@ export default function App({productos , esRespaldo, estado , onReintar, onAgreg
         <section className="flex flex-wrap gap-4">
         {
           visible.map((p) => (
-            <ProductCard key={p.id} producto={p} onAgregar={onAgregar}/>
+            <ProductCard key={p.id} producto={p}/>
           ))
         }
         </section>

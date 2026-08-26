@@ -2,14 +2,15 @@ import { useParams, Link } from "react-router-dom";
 import type { Producto } from "../tipos";
 import EtiquetaStock from "../components/EtiquetaStock";
 import formatearPrecio from "../formato";
+import { useCart } from "../context/useCart";
 
 
 interface Props {
     productos : Producto[];
-    onAgregar : (producto : Producto) => void;
 }
 
-export default function DetalleProducto({productos, onAgregar} : Props){
+export default function DetalleProducto({productos} : Props){
+    const { agregar } = useCart();
     const {id} = useParams(); //SIEMPRE RESPONDE UN STRING
     const producto = productos.find((p) => p.id === Number(id));
     if(!producto) {
@@ -30,7 +31,7 @@ export default function DetalleProducto({productos, onAgregar} : Props){
                 <p className="mt-2 text-xl">{formatearPrecio(producto.precio * 1.18)} con IGV</p>
                 <button
                     className="mt-4 rounded-full border px-4 py-1"
-                    onClick={() => onAgregar(producto)}
+                    onClick={() => agregar(producto)}
                     disabled = {producto.stock===0}
                 >
                     {producto.stock === 0 ? 'Agotado' : 'Agregar al carrito'}
