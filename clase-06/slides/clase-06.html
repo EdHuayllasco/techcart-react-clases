@@ -146,7 +146,7 @@
         <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Detalle</span><span class="why">otra copia de onAgregar</span></div>
         <div class="chrow"><span class="nd">App</span><span class="ar">→</span><span class="nd">Checkout</span><span class="why">carrito, total, onVaciar… y la cadena crece con cada página</span></div>
       </div>
-      <p class="lead" style="text-align:center;font-size:15px;max-width:700px">Perforar componente tras componente para que un dato llegue al fondo. Los rojos <b>solo transportan</b>.<br />React tiene una pieza para datos que son de TODOS: <b>Context</b> — el de arriba guarda el dato y el de abajo lo lee directo.</p>
+      <p class="lead" style="text-align:center;font-size:15px;max-width:700px">Pasar una prop por componentes que no la usan, solo para que llegue al que sí la usa. Los rojos <b>solo la transportan</b>.<br />React tiene una pieza para datos que son de TODOS: <b>Context</b> — el de arriba guarda el dato y el de abajo lo lee directo.</p>
     </div>
     <div class="pageno">3 / 12</div>
   </div>
@@ -203,8 +203,8 @@
     <h2 style="margin-bottom:12px">Arquitectura <span class="cy">hexagonal</span></h2>
     <div class="fill col center" style="gap:10px">
       <div class="hex">
-        <div class="hcard"><div class="hn">infraestructura</div><div class="hf">api.ts · datos.ts<br />pedidos.ts · almacen.ts · auth.ts</div><div class="hx">adaptadores: la red y el disco. La forma cruda no sale de aquí</div></div>
-        <div class="hcard core"><div class="hn">dominio</div><div class="hf">tipos.ts · carrito.ts</div><div class="hx">las reglas del negocio, puras: ni React, ni red, ni disco</div></div>
+        <div class="hcard"><div class="hn">infraestructura</div><div class="hf">api.ts · datos.ts<br />pedidos.ts · almacen.ts · auth.ts</div><div class="hx">conecta con la red y el disco. Los nombres en inglés de la API solo existen aquí</div></div>
+        <div class="hcard core"><div class="hn">dominio</div><div class="hf">tipos.ts · carrito.ts</div><div class="hx">las reglas de la tienda: funciones que reciben datos y devuelven datos. Ni React, ni red, ni disco</div></div>
         <div class="hcard"><div class="hn">ui</div><div class="hf">components/ · pages/<br />layout/ · formato.ts</div><div class="hx">lo que se ve. Consume la aplicación; nunca toca el disco directo</div></div>
       </div>
       <div class="hcard" style="max-width:520px"><div class="hn">aplicación</div><div class="hf">CarritoContext.tsx · useCart.ts · SesionContext.tsx · useSesion.ts</div><div class="hx">los casos de uso, con React: conectan dominio e infraestructura con la UI</div></div>
@@ -229,7 +229,7 @@
         &nbsp;&nbsp;<span class="d">ui/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;components/ · pages/ · layout/ · formato.ts <span class="cm">← importa de todos</span><br />
         &nbsp;&nbsp;App.tsx · main.tsx · index.css
       </div>
-      <div class="war" style="max-width:660px"><b>La regla de dependencia:</b> las flechas apuntan HACIA el dominio, nunca al revés. Si <span class="mono">carrito.ts</span> quiere importar React o <span class="mono">api.ts</span>, algo está en el lugar equivocado. Refactorizar = cambiar la forma sin cambiar el comportamiento: se parte de build verde y se llega a build verde.</div>
+      <div class="war" style="max-width:660px"><b>La regla de dependencia:</b> las capas de afuera importan del dominio, nunca al revés. Si <span class="mono">carrito.ts</span> quiere importar React o <span class="mono">api.ts</span>, algo está en el lugar equivocado. Refactorizar = cambiar la forma sin cambiar el comportamiento: se parte de build verde y se llega a build verde.</div>
     </div>
     <div class="pageno">7 / 12</div>
   </div>
