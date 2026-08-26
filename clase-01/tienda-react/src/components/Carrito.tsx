@@ -1,5 +1,5 @@
 import type { ItemCarrito } from "../tipos";
- 
+import { Link } from "react-router-dom";
 interface Props {
     items : ItemCarrito[]; // []
     onQuitar : (id: number) => void;
@@ -7,7 +7,7 @@ interface Props {
 }
 export default function PanelCarrito({items, onQuitar, onVaciar} : Props){
     return(
-        <section className="mb-6 rounded-xl borde p-4">
+        <section className="mb-6 rounded-xl border p-4">
         <h2 className="font-semibold">Tu carrito</h2>
         {items.length === 0 && <p className="text-sm text-gray-500">Tu carrito esta vacio.</p>}
         <ul>
@@ -23,7 +23,10 @@ export default function PanelCarrito({items, onQuitar, onVaciar} : Props){
           }
         </ul>
         {items.length > 0 && (
-          <button className="mt-2 text-sm underline" onClick={onVaciar}>Vaciar carrito</button>
+          <div className="mt-2 flex gap-4 text-sm">
+            <button className="underline" onClick={onVaciar}>Vaciar carrito</button>
+          <Link to="/checkout" className="font-semibold underline">Ir a pagar</Link>
+          </div>
         )}
       </section>
     );

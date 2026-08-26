@@ -8,13 +8,12 @@ import DetalleProducto from './pages/Detalle';
 import NoEncontrada from './pages/NoEncontrada';
 import Layout from './layout/layout';
 import formatearPrecio from './formato';
-const CLAVE_CARRITO = 'tienda_carrito';
+import { Checkout } from './pages/checkout';
 export default function App(){
     const [productos, setProductos] = useState<Producto[]>([]);
     const [estado, setEstado] = useState<EstadoCarga>('cargando');
     const [esRespaldo, setEsRespaldo] = useState(false);
     const [intento, setIntento] = useState(0); // PALANCA DE INTENTOS
-    const [carrito, setCarrito] = useState<ItemCarrito[]>(leerCarrito);
      
     useEffect(() => {
         const controlador = new AbortController();
@@ -33,32 +32,7 @@ export default function App(){
         cargar();
         return () => controlador.abort();
     }, [intento]);
-    useEffect(() => {
-    try{
-      localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-    }catch (error) {
-      console.warn('No se pudo guardar el carrito', error instanceof Error ? error.message : error);
-    }
-    },[carrito]);
-    function leerCarrito() : ItemCarrito[] {
-      try{
-        const crudo : unknown = JSON.parse(localStorage.getItem(CLAVE_CARRITO) ?? '[]');
-        return Array.isArray(crudo) ? (crudo as ItemCarrito[]) : [];
-      }catch{
-        return []
-      }
-    }
-  function agregarAlCarrito(producto : Producto) { 
-  setCarrito(agregarItems(carrito, producto));
-  }
-  function quitarDelCarrito(id : number) {
-    setCarrito(quitarItem(carrito, id));
-  }
-  function vaciarCarrito(){
-    setCarrito([]);
-  }
-  const unidades = carrito.reduce((suma, i) => suma + i.cantidad, 0);
-  const totalPrecio = carrito.reduce((suma, i) => suma + i.cantidad * i.precio, 0);
+  
   return(
     <main className="mx-auto max-w-5xl p-6">
       <Routes>
@@ -85,6 +59,8 @@ export default function App(){
           <DetalleProducto productos={productos} onAgregar={agregarAlCarrito}/>
         }
         />
+        <Route path='/checkout' 
+        element={<Checkout carrito={carrito} total={totalPrecio} onVaciar={vaciarCarrito}/>}/>
         </Route>
         <Route
           path='*'

@@ -16,3 +16,17 @@ export interface ItemCarrito {
     precio: number;
     cantidad: number; // 1 maximo sabe dios porque cuando es 0 no va a existir ese item carrito dentro del carro.
 }
+
+export interface DatosEnvio{
+    nombre : string;
+    email : string; 
+    direccion : string; 
+    telefono : string;
+}
+export interface Pedido { 
+    id: number;
+    fecha : string;
+    cliente : DatosEnvio;
+    items : ItemCarrito[];
+    total : number 
+}
