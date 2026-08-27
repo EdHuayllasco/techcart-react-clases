@@ -23,6 +23,16 @@ export async function iniciarSesion(usuario : string, clave : string) : Promise<
         id : data.id,
         nombre : data.firstName || data.username,
         email : data.email,
-        token: data.accessToken
+        token: data.accessToken,
+        expiraEn: Date.now() + MINUTOS_SESION * 60 * 1000
     }
+}
+
+export async function obtenerPerfil (token : string, signal?: AbortSignal) : Promise<void> {
+    console.log(token);
+    const r = await fetch(`${BASE}/auth/me`, {
+        headers : { Authorization : `Bearer ${token}`},
+        signal
+    });
+    if(!r.ok) throw new Error(`Sesion rechazada por el servidor (HTTP ${r.status})`);
 }

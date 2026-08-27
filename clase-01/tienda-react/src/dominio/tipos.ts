@@ -36,4 +36,5 @@ export interface Usuario {
     nombre : string;
     email : string;
     token : string;
+    expiraEn: number;
 }
