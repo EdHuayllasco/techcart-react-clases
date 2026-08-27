@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import formatearPrecio from "../formato";
-import type { Producto } from "../tipos";
+import type { Producto } from "../../dominio/tipos";
 import EtiquetaStock from "./EtiquetaStock";
-import { useCart } from "../context/useCart";
+import { useCart } from "../../aplicacion/useCart";
 
 interface Props{
   producto: Producto;

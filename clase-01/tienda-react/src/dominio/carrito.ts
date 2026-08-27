@@ -1,4 +1,4 @@
-import type { ItemCarrito, Producto } from "./tipos";
+import type { ItemCarrito, Producto } from "../dominio/tipos";
 export function agregarItems(items:ItemCarrito[], producto:Producto) : ItemCarrito[] {
     const existente = items.find((i) => i.id === producto.id);
     if(existente) {

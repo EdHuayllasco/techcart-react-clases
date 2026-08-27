@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
-import { useCart } from "../context/useCart";
+import { NavLink, Link } from "react-router-dom";
+import { useCart } from "../../aplicacion/useCart";
+import { useSesion } from "../../aplicacion/useSesion";
 import formatearPrecio from "../formato";
 interface Props {
     nombre : string;
@@ -8,6 +9,7 @@ interface Props {
 
 
 export default function Header({nombre, eslogan = 'Tecnologia para Todos'} : Props) {
+    const  {usuario, salir} = useSesion();
     const {unidades, total} = useCart();
     return(
         <header className="mb-6 flex items-center justify-between">
@@ -25,7 +27,16 @@ export default function Header({nombre, eslogan = 'Tecnologia para Todos'} : Pro
                     </NavLink>
                 </nav>
             </div>
-            <p>🛒 {unidades} productos - {formatearPrecio(total)}</p>
+            <div className="text-right">
+                <p>🛒 {unidades} productos - {formatearPrecio(total)}</p>
+                {
+                    usuario ? (
+                        <p className="text-sm">Hola, {usuario.nombre}
+                            <button className="ml-2 underline" onClick={salir}>Salir</button>
+                        </p>
+                    ) : (<Link to="/login" className="text-sm underline">Inicia Sesion</Link>)
+                }
+            </div>
         </header>
     )
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
-import type { EstadoCarga, Producto } from "../tipos";
+import type { EstadoCarga, Producto } from "../../dominio/tipos";
 interface Props {
     productos : Producto[];
     esRespaldo : boolean;

@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import type { DatosEnvio } from "../tipos";
-import { useCart } from "../context/useCart";
+import type { DatosEnvio } from "../../dominio/tipos";
+import { useCart } from "../../aplicacion/useCart";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import formatearPrecio from "../formato";
-import { guardarPedido } from "../pedidos";
+import formatearPrecio from "../../ui/formato";
+import { guardarPedido } from "../../infraestructura/pedidos";
 
 
 type Errores = Partial<Record<keyof DatosEnvio, string>>;

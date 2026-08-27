@@ -1,5 +1,5 @@
-import type { Producto } from "./tipos";
-import {productos as respaldo} from './datos';
+import type { Producto } from "../dominio/tipos";
+import {productos as respaldo} from '../infraestructura/datos';
 
 const BASE  = 'https://dummyjson.com';
 

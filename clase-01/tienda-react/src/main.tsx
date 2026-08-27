@@ -3,14 +3,17 @@ import { createRoot } from 'react-dom/client'
  import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
-import { CarritoProvider } from './context/CarritoContext.tsx'
+import { CarritoProvider } from './aplicacion/CarritoContext.tsx'
+import { SesionProvider } from './aplicacion/SesionContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <CarritoProvider>
-        <App />
-      </CarritoProvider>
+      <SesionProvider>
+        <CarritoProvider>
+          <App />
+        </CarritoProvider>
+      </SesionProvider>
     </BrowserRouter>
   </StrictMode>,
 )

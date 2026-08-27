@@ -1,12 +1,13 @@
 import {Routes, Route} from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './ui/pages/Home';
 import { useEffect, useState } from 'react';
-import type { EstadoCarga, Producto } from './tipos';
-import { obtenerProductos } from './api';
-import DetalleProducto from './pages/Detalle';
-import NoEncontrada from './pages/NoEncontrada';
-import Layout from './layout/layout';
-import { Checkout } from './pages/checkout';
+import type { EstadoCarga, Producto } from './dominio/tipos';
+import { obtenerProductos } from './infraestructura/api';
+import DetalleProducto from './ui/pages/Detalle';
+import NoEncontrada from './ui/pages/NoEncontrada';
+import Layout from './ui/layout/layout';
+import { Checkout } from './ui/pages/checkout';
+import Login from './ui/pages/Login';
 export default function App(){
     const [productos, setProductos] = useState<Producto[]>([]);
     const [estado, setEstado] = useState<EstadoCarga>('cargando');
@@ -44,6 +45,7 @@ export default function App(){
         }/>
         <Route path='/producto/:id' element={<DetalleProducto productos={productos}/>}/>
         <Route path='/checkout' element={<Checkout/>}/>
+        <Route path='/login' element={<Login/>}/>
         <Route path='*' element={<NoEncontrada/>}/>
       </Route>
     </Routes>

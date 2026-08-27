@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
-import type { ItemCarrito, Producto } from "../tipos";
-import { agregarItems, quitarItem } from "../carrito";
-const CLAVE_CARRITO = 'tienda_carrito';
+import type { ItemCarrito, Producto } from "../dominio/tipos";
+import { agregarItems, quitarItem } from "../dominio/carrito";
+import { leerCarrito, guardarCarrito } from "../infraestructura/almacen";
+
 interface ValorCarrito {
     items : ItemCarrito[];
     unidades: number;
@@ -10,23 +11,12 @@ interface ValorCarrito {
     quitar : (id: number) => void;
     vacia : () => void;
 }
-function leerCarrito() : ItemCarrito[] {
-      try{
-        const crudo : unknown = JSON.parse(localStorage.getItem(CLAVE_CARRITO) ?? '[]');
-        return Array.isArray(crudo) ? (crudo as ItemCarrito[]) : [];
-      }catch{
-        return []
-      }
-}
+
 export const CarritoContext = createContext<ValorCarrito | null>(null);
 export function CarritoProvider({children} : {children:ReactNode}){
     const [items, setItems] = useState<ItemCarrito[]>(leerCarrito);
     useEffect(() => {
-        try{
-          localStorage.setItem(CLAVE_CARRITO, JSON.stringify(items));
-        }catch (error) {
-          console.warn('No se pudo guardar el carrito', error instanceof Error ? error.message : error);
-        }
+        guardarCarrito(items);
     },[items]);
 
     const unidades = items.reduce((suma, i) => suma + i.cantidad, 0);

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCart } from "../context/useCart";
+import { useCart } from "../../aplicacion/useCart";
 export default function PanelCarrito(){
     const { items, quitar, vacia } = useCart();
     return(
