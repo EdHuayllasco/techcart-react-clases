@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 8 de React — El proyecto final arranca (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+  .rc.err{ border-left:3px solid #c0264a; } .rc.err .h{ color:#c0264a; font-family:'IBM Plex Sans',sans-serif; font-size:14px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .score{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; }
+  .sc{ background:var(--white); border-radius:12px; padding:12px 14px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .sc .pts{ font-size:30px; font-weight:700; color:var(--cyan); line-height:1; } .sc .nm{ font-weight:600; font-size:14px; margin-top:4px; } .sc .ds{ font-size:11.5px; color:var(--soft); margin-top:4px; line-height:1.4; }
+  table.tm{ width:100%; border-collapse:collapse; font-size:11.5px; background:var(--white); border-radius:12px; overflow:hidden; box-shadow:0 5px 16px rgba(20,30,50,.06); }
+  table.tm th{ background:var(--black); color:#fff; text-align:left; padding:6px 10px; font-weight:600; font-size:11px; letter-spacing:.04em; }
+  table.tm td{ padding:5px 10px; border-top:1px solid var(--line); vertical-align:top; }
+  table.tm td.p{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--cyan); white-space:nowrap; }
+  .tree{ font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.6; text-align:left; background:var(--white); border-radius:12px; padding:12px 18px; box-shadow:0 5px 16px rgba(20,30,50,.06); white-space:nowrap; }
+  .tree .d{ color:var(--cyan); font-weight:700; } .tree .cm{ color:var(--soft); } .tree .todo{ color:#b64400; font-weight:600; }
+  .steps{ display:flex; flex-direction:column; gap:7px; width:100%; }
+  .step{ display:flex; gap:12px; align-items:center; background:var(--white); border-radius:11px; padding:8px 14px; box-shadow:0 4px 14px rgba(20,30,50,.05); font-size:13px; }
+  .step .k{ flex:0 0 92px; font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--cyan); font-size:12px; }
+  .step .d{ text-align:left; } .step .d b{ font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 8</div>
+    <h1>El proyecto final<br />arranca</h1>
+    <p class="sub">Cómo se califica, cómo se elige el tema, y la base de un proyecto nuevo creada en vivo desde cero: arquitectura en capas, API, sesión, rutas y producción.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Última sesión del bloque</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Última sesión del bloque</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + dos tiendas en producción</div></div><div class="tm">8'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate de la clase 7</div><div class="dd">solo lo pendiente · guion de la clase 7</div></div><div class="tm">0–60'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">La rúbrica, criterio por criterio</div><div class="dd">20 puntos · 12 temas · bonus · sustentación</div></div><div class="tm">30'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">Del tema al contrato</div><div class="dd">tres preguntas antes de codear · APIs públicas</div></div><div class="tm">25'</div></div>
+        <div class="icard manos"><div class="n">D.</div><div><div class="tt">La base del proyecto, desde cero</div><div class="dd">un recetario: capas · API · sesión · rutas · deploy</div></div><div class="tm">100'</div></div>
+        <div class="icard"><div class="n">E–F.</div><div><div class="tt">Errores frecuentes + cierre del bloque</div><div class="dd">plan hasta la sustentación · tareas = hitos</div></div><div class="tm">40'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · cierre a las 3:45</p>
+    </div>
+    <div class="pageno">2 / 11</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: CÓMO SE CALIFICA -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Rúbrica</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Escala vigesimal · rúbrica publicada en el repositorio del curso</div>
+    <h2 style="margin-bottom:12px">Cómo se <span class="cy">califica</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="score">
+        <div class="sc"><div class="pts">3</div><div class="nm">Proceso</div><div class="ds">avance en el repo después de cada clase: 2 réplica + tareas · 1 solo réplica · 0 sin entrega. Se promedia y escala.</div></div>
+        <div class="sc"><div class="pts">11</div><div class="nm">Proyecto desplegado</div><div class="ds">los 12 temas del temario, cada uno Logrado / Parcial / Insuficiente / Ausente. Bonus hasta +1 (tope 11).</div></div>
+        <div class="sc"><div class="pts">3</div><div class="nm">Sustentación</div><div class="ds">10 min de demostración en producción + defensa de una decisión propia. 5 min de preguntas.</div></div>
+        <div class="sc"><div class="pts">3</div><div class="nm">Dominio conceptual</div><div class="ds">2 o 3 preguntas al azar del banco, respondidas sobre TU código.</div></div>
+      </div>
+      <div class="war" style="max-width:720px"><b>Requisitos de recepción (sin puntos; sin ellos no se corrige):</b> <span class="mono">npm run build</span> sin errores · aplicación desplegada en Vercel y operativa desde cualquier dispositivo · consola del navegador sin errores en el flujo principal.</div>
+    </div>
+    <div class="pageno">3 / 11</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: LOS 12 TEMAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Rúbrica</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">11 puntos · Logrado 100% · Parcial 60% · Insuficiente 20% · Ausente 0</div>
+    <h2 style="margin-bottom:10px">Los <span class="cy">12 temas</span> del proyecto</h2>
+    <div class="fill col center" style="gap:8px">
+      <table class="tm">
+        <tr><th>Tema</th><th>Pts</th><th>Logrado</th><th>Tema</th><th>Pts</th><th>Logrado</th></tr>
+        <tr><td>1 · Vite + JSX</td><td class="p">0.50</td><td>proyecto propio que compila, JSX correcto</td><td>7 · React Router</td><td class="p">1.00</td><td>detalle por URL, 404 propia, rutas operativas tras recargar</td></tr>
+        <tr><td>2 · Componentes + Props</td><td class="p">1.00</td><td>uno por archivo, props tipadas, interfaces del dominio</td><td>8 · Formularios</td><td class="p">1.00</td><td>controlado, validación por campo, labels, envío bloqueado</td></tr>
+        <tr><td>3 · Listas y condicionales</td><td class="p">0.75</td><td>key = id, sin el "0" visible, responsive, semántica</td><td>9 · Hooks + Context</td><td class="p">1.00</td><td>la colección en Context, un hook propio con uso real</td></tr>
+        <tr><td>4 · Eventos + useState</td><td class="p">1.00</td><td>estado mínimo, derivados, inmutabilidad</td><td>10 · JWT + sesión + .env</td><td class="p">1.50</td><td>token usado (Bearer), expira, rutas protegidas que retornan</td></tr>
+        <tr><td>5 · useEffect</td><td class="p">1.00</td><td>dependencias, limpieza, persistencia con validación</td><td>11 · Optimización</td><td class="p">0.25</td><td>memo o lazy con criterio y evidencia</td></tr>
+        <tr><td>6 · API + carga + errores</td><td class="p">1.75</td><td>tres estados, reintentar, AbortController, sin catch vacío</td><td>12 · Vercel</td><td class="p">0.25</td><td>operativa, rewrite de SPA</td></tr>
+      </table>
+      <p class="lead" style="text-align:center;font-size:13.5px"><b>Cinco requisitos mínimos, sea cual sea el tema:</b> entidad principal desde una API real · colección del usuario con persistencia · formulario principal con validación · sesión con áreas protegidas · desplegada. <b>TypeScript acotado:</b> interfaces del dominio usadas + props tipadas.</p>
+    </div>
+    <div class="pageno">4 / 11</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: DEL TEMA AL CONTRATO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Diseño</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Tres preguntas antes de abrir VS Code</div>
+    <h2 style="margin-bottom:12px">Del tema al <span class="cy">contrato</span></h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="trio">
+        <div class="tcrd"><div class="nm">1 · ¿Qué entidad?</div><div class="ds">UNA sola: recetas, películas, libros, eventos, pokémon, ejercicios. Cinco o seis campos que de verdad vas a mostrar, en español.</div></div>
+        <div class="tcrd"><div class="nm">2 · ¿De qué API?</div><div class="ds">Real, gratuita, JSON: DummyJSON (recipes, posts, users, todos), TMDB (películas), PokeAPI, Open Library, países, clima.</div></div>
+        <div class="tcrd"><div class="nm">3 · ¿Qué colección del usuario?</div><div class="ds">Favoritos, "por cocinar", lista de lectura, reservas, "ya visto". Es tu carrito: Context + persistencia + su formulario.</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:680px">
+        <span class="c">// el ejemplo de hoy: recetas de dummyjson.com/recipes</span><br />
+        <span class="p">export interface</span> <span class="t">Receta</span> { id: <span class="u">number</span>; nombre: <span class="u">string</span>; imagen: <span class="u">string</span>; cocina: <span class="u">string</span>; dificultad: <span class="u">string</span>; minutos: <span class="u">number</span>; ingredientes: <span class="u">string</span>[]; }<br />
+        <span class="c">// mapa de rutas: /  ·  /receta/:id  ·  /perfil (protegida)  ·  /login  ·  *</span>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14px">Con el <b>contrato</b> y el <b>mapa de rutas</b> en papel, el resto es el mismo orden de la tienda. La API se traduce en UN archivo: el adaptador.</p>
+    </div>
+    <div class="pageno">5 / 11</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: LA BASE DEL PROYECTO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Proyecto</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">D</div></aside>
+  <div class="body col">
+    <div class="kicker">Lo que se construye hoy · lo que te toca a ti</div>
+    <h2 style="margin-bottom:12px">La <span class="cy">base</span> del proyecto</h2>
+    <div class="fill center" style="gap:16px">
+      <div class="tree">
+        src/<br />
+        &nbsp;&nbsp;<span class="d">dominio/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipos.ts <span class="cm">← tu contrato</span><br />
+        &nbsp;&nbsp;<span class="d">infraestructura/</span>&nbsp;&nbsp;api.ts (adaptador) · datos.ts · auth.ts · almacen.ts<br />
+        &nbsp;&nbsp;<span class="d">aplicacion/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SesionContext.tsx · useSesion.ts <span class="cm">← copiados de la tienda</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="todo">+ ColeccionContext.tsx · useColeccion.ts ← TAREA</span><br />
+        &nbsp;&nbsp;<span class="d">ui/</span>components/&nbsp;&nbsp;Header · Footer · TarjetaReceta · RutaProtegida<br />
+        &nbsp;&nbsp;<span class="d">ui/</span>pages/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Home · Detalle · Perfil · Login · NoEncontrada <span class="todo">+ el formulario ← TAREA</span><br />
+        &nbsp;&nbsp;<span class="d">ui/</span>layout/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Layout.tsx<br />
+        &nbsp;&nbsp;App.tsx · main.tsx · vite-env.d.ts &nbsp;&nbsp;&nbsp;<span class="cm">raíz:</span> .env · .env.example · vercel.json
+      </div>
+      <div class="war" style="max-width:300px"><b>Hoy sale con:</b> capas, API con adaptador y tres estados, detalle por URL, sesión real que expira, ruta protegida, lazy, deploy.<br /><br /><b>Te falta (las tareas):</b> la colección en Context, el formulario con validación, un hook propio. Con eso es un proyecto final.</div>
+    </div>
+    <div class="pageno">6 / 11</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: ERRORES FRECUENTES EN PROYECTOS FINALES -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Proyecto</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">E</div></aside>
+  <div class="body col">
+    <div class="kicker">Todos bajan puntos que ya tenías ganados</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> en proyectos finales</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc err"><div class="h">1 · la tienda con otro nombre</div><div class="x">se nota en la primera pregunta de la sustentación. Tu contrato, tu API, tu colección</div></div>
+        <div class="rc err"><div class="h">2 · todo en App</div><div class="x">componentes de 300 líneas. La rúbrica pide un componente por archivo con una responsabilidad</div></div>
+        <div class="rc err"><div class="h">3 · sin carga ni errores</div><div class="x">pantalla en blanco mientras carga y un catch vacío. Es el tema que más pesa: 1.75</div></div>
+        <div class="rc err"><div class="h">4 · token guardado, nunca enviado</div><div class="x">ninguna petición con Authorization: Bearer. La rúbrica lo pide explícitamente</div></div>
+        <div class="rc err"><div class="h">5 · un commit gigante la noche anterior</div><div class="x">el proceso vale 3 puntos y el historial de commits es la evidencia</div></div>
+        <div class="rc err"><div class="h">6 · 404 al recargar o .env en el repo</div><div class="x">falta vercel.json; o una clave publicada. Revisar antes de entregar</div></div>
+      </div>
+    </div>
+    <div class="pageno">7 / 11</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: SUSTENTACIÓN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Ensáyala con reloj</div>
+    <h2 style="margin-bottom:12px">Sustentación: <span class="cy">10 + 5</span></h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="steps">
+        <div class="step"><div class="k">min 1</div><div class="d"><b>Qué es y para quién</b>, en dos frases.</div></div>
+        <div class="step"><div class="k">min 2–6</div><div class="d"><b>El flujo completo en producción:</b> listado · búsqueda · detalle · agregar a tu colección · cerrar sesión · intentar la ruta protegida · login · el formulario fallando una validación y luego pasando.</div></div>
+        <div class="step"><div class="k">min 7–10</div><div class="d"><b>UNA decisión de diseño tuya</b>, con razones: por qué esa API, por qué la colección vive en Context, por qué separaste tal archivo.</div></div>
+        <div class="step"><div class="k">+5 min</div><div class="d"><b>Preguntas sobre tu código</b> (banco conceptual) y, quizá, un cambio pequeño en vivo: agregar un campo al contrato y propagarlo.</div></div>
+      </div>
+      <div class="war" style="max-width:720px"><b>Preguntas de muestra:</b> "Señala un dato derivado en tu App: ¿por qué no es un useState?" · "Muestra la función de limpieza de un efecto: ¿qué pasa si la borras?" · "Pon la aplicación en Offline: ¿qué ve el usuario y por qué eso es correcto?" · "¿Qué pasaría si tu listado usara el índice como key?"</div>
+    </div>
+    <div class="pageno">8 / 11</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: PLAN DE TRABAJO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Un commit al terminar cada hito, no al final</div>
+    <h2 style="margin-bottom:12px">Plan de <span class="cy">trabajo</span></h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="steps">
+        <div class="step"><div class="k">Hito 1</div><div class="d"><b>La base con TU tema:</b> contrato, adaptador, listado con estados, detalle, sesión, deploy. Es replicar lo de hoy.</div></div>
+        <div class="step"><div class="k">Hito 2</div><div class="d"><b>La colección del usuario:</b> Context + hook propio, botón en la tarjeta, listado en la página protegida, persistencia.</div></div>
+        <div class="step"><div class="k">Hito 3</div><div class="d"><b>El formulario principal:</b> controlado, validación por campo, labels, guarda algo real.</div></div>
+        <div class="step"><div class="k">Hito 4</div><div class="d"><b>Pulir:</b> skeleton, 404 propia, título por página, README con la URL y la sección "Decisión de diseño".</div></div>
+        <div class="step"><div class="k">Hito 5</div><div class="d"><b>Ensayar la sustentación</b> con reloj.</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px"><b>Entrega:</b> [FECHA] &nbsp;·&nbsp; <b>Sustentaciones:</b> [FECHA] &nbsp;·&nbsp; Reviso los repos entre medio: si te trabas, un commit con el error y un mensaje alcanzan.</p>
+    </div>
+    <div class="pageno">9 / 11</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Tareas = hitos del proyecto · repo propio, build en cero, URL en el README</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>La base con tu tema</b>: replica lo de hoy con TU contrato y TU API. Desplegada, con la URL en el README.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>La colección del usuario</b>: Context + hook propio calcados del carrito, botón en la tarjeta, listado en la página protegida, persistencia con comprobación al leer.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El formulario principal</b>: controlado, validación por campo con mensajes junto al input, labels, envío bloqueado con errores. Guarda algo real.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>El README que sustenta</b>: sección "Arquitectura" (propósito de cada carpeta con un ejemplo) y sección "Decisión de diseño". Es tu guion de la sustentación.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>El bonus completo</b>: una interfaz propia para el adaptador (<span class="mono">RepositorioRecetas</span>), <span class="mono">api.ts</span> la implementa y la aplicación depende de la interfaz. Puertos y adaptadores de verdad.</div></div>
+      </div>
+    </div>
+    <div class="pageno">10 / 11</div>
+  </div>
+</section>
+
+<!-- 11 · DIAPO 10: LO QUE CONSTRUISTE -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Cierre del bloque React</span>
+    <h2>Lo que <span style="color:var(--cyan)">construiste</span> en ocho clases</h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#e6e9f2">componentes · props · estado · derivados · efectos · limpieza</span><br />
+      <span style="color:#e6e9f2">API con adaptador · estados de carga · rutas · formularios · Context · hooks propios</span><br />
+      <span style="color:#e6e9f2">sesión con JWT · rutas protegidas · arquitectura en capas · memo/lazy · producción</span><br />
+      <span style="color:#6b7686">// una tienda en internet, y hoy otro proyecto desde cero en una tarde</span>
+    </div>
+    <p class="lead">Eso es lo que lleva un desarrollador frontend junior a su primera entrevista — y la URL para probarlo. Lo que sigue es tu proyecto: mío es revisar, responder y calificar; tuyo es construir.</p>
+    <p class="bye">Nos vemos en las sustentaciones. Gracias por estas ocho clases.</p>
+  </div>
+</section>
+
+</body>
+</html>
