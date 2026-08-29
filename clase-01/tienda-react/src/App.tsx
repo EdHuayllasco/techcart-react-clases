@@ -1,19 +1,20 @@
 import {Routes, Route} from 'react-router-dom';
 import Home from './ui/pages/Home';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import type { EstadoCarga, Producto } from './dominio/tipos';
 import { obtenerProductos } from './infraestructura/api';
 import DetalleProducto from './ui/pages/Detalle';
 import NoEncontrada from './ui/pages/NoEncontrada';
 import Layout from './ui/layout/layout';
-import { Checkout } from './ui/pages/checkout';
-import Login from './ui/pages/Login';
+import RutaProtegida from './ui/components/RutaProtegida';
+const Checkout = lazy(() => import('./ui/pages/checkout'));
+const Login = lazy(() => import('./ui/pages/Login'));
 export default function App(){
     const [productos, setProductos] = useState<Producto[]>([]);
     const [estado, setEstado] = useState<EstadoCarga>('cargando');
     const [esRespaldo, setEsRespaldo] = useState(false);
     const [intento, setIntento] = useState(0); // PALANCA DE INTENTOS
-     
+    
     useEffect(() => {
         const controlador = new AbortController();
         async function cargar(){
@@ -33,6 +34,7 @@ export default function App(){
     }, [intento]);
   
   return(
+    <Suspense fallback={<p className='p-6 text-gray-500'>Cargando pagina...</p>}>
     <Routes>
       <Route element={<Layout/>}>
         <Route path='/' element={
@@ -44,10 +46,13 @@ export default function App(){
           />
         }/>
         <Route path='/producto/:id' element={<DetalleProducto productos={productos}/>}/>
-        <Route path='/checkout' element={<Checkout/>}/>
+        <Route element={<RutaProtegida/>}>
+          <Route path='/checkout' element={<Checkout/>}/>
+        </Route>
         <Route path='/login' element={<Login/>}/>
         <Route path='*' element={<NoEncontrada/>}/>
       </Route>
     </Routes>
+    </Suspense>
   )
 }

@@ -1,4 +1,4 @@
-import type { Pedido } from "./tipos";
+import type { Pedido } from "../dominio/tipos";
 
 const CLAVE_PEDIDOS = 'tienda_pedidos';
 export function leerPedidos() : Pedido[] {

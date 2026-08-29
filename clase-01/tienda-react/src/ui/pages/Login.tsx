@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
 import { useSesion } from "../../aplicacion/useSesion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export default function Login(){
     const {entrar} = useSesion();
     const navegar = useNavigate();
+    const ubicacion = useLocation();
+    const desde = (ubicacion.state as { desde?: string } | null )?.desde ?? '/';
     const [usuario, setUsuario] = useState('');
     const [clave, setClave] = useState('');
     const [error, setError] = useState('');
@@ -16,7 +18,7 @@ export default function Login(){
         setEnviando(true);
         try {
             await entrar(usuario, clave);
-            navegar('/');
+            navegar(desde, {replace : true});
         } catch (fallo) {
             setError(fallo instanceof Error ? fallo.message : 'No se puede iniciar sesion');
         } finally {

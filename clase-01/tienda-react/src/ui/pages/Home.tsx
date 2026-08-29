@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
 import type { EstadoCarga, Producto } from "../../dominio/tipos";
@@ -18,12 +18,12 @@ export default function Home({productos , esRespaldo, estado , onReintar} : Prop
   const categorias = ['todas', 'laptops', 'audio', 'relojes'];
   const busqueda = termino.trim().toLocaleLowerCase();
 
-  const visible = productos.filter(
+  const visible = useMemo( () => productos.filter(
     (producto) => 
     (categoriaActiva === 'todas' || producto.categoria === categoriaActiva) && 
     (busqueda === '' || producto.nombre.toLocaleLowerCase().includes(busqueda) || 
     producto.marca.toLocaleLowerCase().includes(busqueda))
-  );
+  ), [productos, categoriaActiva, busqueda]);
 
   useEffect(() => {
     document.title = `${nombreTienda} - ${visible.length} resultados`;

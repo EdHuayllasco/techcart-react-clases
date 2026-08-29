@@ -15,7 +15,7 @@ function validar(form : DatosEnvio) : Errores {
     if(!/^\+?[1-9]\d{1,14}$/.test(form.telefono)) errores.telefono  = 'Escribe almenos 7 digitos';
     return errores;
 }
-export function Checkout() {
+export default function Checkout() {
     const { items: carrito, total, vacia } = useCart();
     const [form, setForm] = useState<DatosEnvio>({nombre: '', email:'', direccion:'', telefono:''});
     const [tocados, setTocados] = useState<Partial<Record<keyof DatosEnvio, boolean>>>({});

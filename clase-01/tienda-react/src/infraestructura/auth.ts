@@ -1,5 +1,5 @@
 import type { Usuario } from "../dominio/tipos";
-const BASE = 'https://dummyjson.com';
+const BASE = import.meta.env.VITE_API_URL;
 const MINUTOS_SESION = 30;
 // usuario emilys
 // contrasenia : emilypass

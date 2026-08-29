@@ -1,7 +1,7 @@
 import type { Producto } from "../dominio/tipos";
 import {productos as respaldo} from '../infraestructura/datos';
 
-const BASE  = 'https://dummyjson.com';
+const BASE  = import.meta.env.VITE_API_URL;
 
 // interfaz CRUDA de la API
 interface ProductoAPI { 

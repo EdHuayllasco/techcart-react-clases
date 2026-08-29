@@ -3,12 +3,12 @@ import formatearPrecio from "../formato";
 import type { Producto } from "../../dominio/tipos";
 import EtiquetaStock from "./EtiquetaStock";
 import { useCart } from "../../aplicacion/useCart";
-
+import { memo } from "react";
 interface Props{
   producto: Producto;
 }
 
-export default function ProductCard( {producto} : Props){
+function ProductCard( {producto} : Props){
   const { agregar } = useCart();
   const agotado = producto.stock === 0; //true/false
   return(
@@ -31,3 +31,5 @@ export default function ProductCard( {producto} : Props){
     </article>
   )
 }
+
+export default memo(ProductCard);
