@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Clase 9 de React — Dos hooks que faltaban (Masterclass Tecsup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{ --cyan:#00B2E4; --black:#030304; --dark:#212121; --light:#F1F4F9; --white:#fff; --line:#d7dde6; --soft:#5b6472; }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  html,body{ font-family:'IBM Plex Sans',Arial,sans-serif; color:var(--dark); -webkit-font-smoothing:antialiased; }
+  @page{ size:10in 5.625in; margin:0; }
+
+  .slide{ position:relative; width:960px; height:540px; overflow:hidden; background:var(--white); page-break-after:always; display:flex; }
+  .slide:last-child{ page-break-after:auto; }
+
+  .rail{ width:150px; flex:0 0 150px; background:var(--black); position:relative; display:flex; align-items:center; justify-content:center; }
+  .rail .rtitle{ writing-mode:vertical-rl; transform:rotate(180deg); color:var(--cyan); font-weight:700; font-size:24px; letter-spacing:.10em; text-transform:uppercase; line-height:1; }
+  .rail .rnum{ position:absolute; top:22px; left:0; right:0; text-align:center; color:#4a5563; font-size:14px; font-weight:600; letter-spacing:.1em; }
+  .rail .brand{ position:absolute; bottom:20px; left:0; right:0; text-align:center; color:var(--cyan); font-weight:700; font-size:15px; }
+  .rail .brand small{ display:block; color:#5b6472; font-weight:500; font-size:9px; letter-spacing:.14em; margin-top:2px; }
+
+  .body{ flex:1; background:var(--light); padding:38px 48px 34px; position:relative; display:flex; flex-direction:column; }
+  .kicker{ color:var(--cyan); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  h2{ font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.04; color:var(--dark); }
+  h2 .cy{ color:var(--cyan); }
+  .lead{ font-size:16px; color:var(--soft); line-height:1.4; } .lead b{ color:var(--dark); font-weight:600; }
+  .fill{ flex:1; display:flex; } .center{ align-items:center; justify-content:center; text-align:center; } .col{ flex-direction:column; }
+  .mono{ font-family:'IBM Plex Mono',Consolas,monospace; }
+  .pageno{ position:absolute; right:22px; bottom:14px; font-size:12px; color:#9aa4b2; font-weight:500; }
+
+  .cover,.next{ background:var(--black); width:960px; }
+  .grid{ position:absolute; inset:0; background-image:linear-gradient(#141922 1px,transparent 1px),linear-gradient(90deg,#141922 1px,transparent 1px); background-size:120px 120px; }
+  .cover .mc{ position:absolute; right:-6px; top:0; bottom:0; display:flex; align-items:center; }
+  .cover .mc span{ writing-mode:vertical-rl; font-weight:700; font-size:128px; color:transparent; -webkit-text-stroke:1.5px #1c2733; text-transform:uppercase; }
+  .cover .inner,.next .inner{ position:relative; z-index:2; padding:56px 60px; display:flex; flex-direction:column; height:100%; }
+  .cover .logo{ height:34px; align-self:flex-start; }
+  .cover .eyebrow{ margin-top:auto; color:var(--cyan); font-weight:600; font-size:15px; letter-spacing:.16em; text-transform:uppercase; }
+  .cover h1{ color:#fff; font-size:66px; font-weight:700; letter-spacing:-.03em; line-height:.95; margin:10px 0 16px; }
+  .cover .sub{ color:#c5cfda; font-size:20px; max-width:680px; line-height:1.35; }
+  .cover .foot{ margin-top:24px; display:flex; gap:14px; align-items:center; color:#7d8797; font-size:14px; font-weight:500; }
+  .cover .foot .chip{ background:var(--cyan); color:var(--black); font-weight:700; padding:6px 14px; border-radius:980px; font-size:13px; }
+  .next .inner{ justify-content:center; }
+  .next .pill{ align-self:flex-start; background:var(--cyan); color:var(--black); border-radius:980px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:16px; }
+  .next h2{ color:#fff; font-size:44px; } .next .lead{ color:#c5cfda; max-width:720px; margin-top:14px; font-size:16px; } .next .lead b{ color:#fff; }
+  .next .bye{ color:var(--cyan); font-weight:700; margin-top:16px; font-size:16px; }
+  .next .q{ background:#0d1420; border:1px solid #1c2733; border-radius:14px; padding:16px 22px; color:#fff; font-size:21px; font-weight:600; margin-top:13px; max-width:730px; }
+
+  .cards2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; }
+  .icard{ background:var(--white); border-radius:12px; padding:9px 14px; box-shadow:0 6px 20px rgba(20,30,50,.06); display:flex; gap:12px; align-items:flex-start; }
+  .icard .n{ color:var(--cyan); font-weight:700; font-size:22px; line-height:1.1; }
+  .icard .tt{ font-size:14.5px; font-weight:600; } .icard .dd{ font-size:11.5px; color:var(--soft); margin-top:1px; }
+  .icard .tm{ margin-left:auto; color:var(--cyan); font-weight:700; font-size:12.5px; white-space:nowrap; }
+  .icard.manos{ border-left:3px solid #0a7d2c; }
+  .recess{ text-align:center; font-size:13px; color:var(--soft); margin-top:10px; }
+  .recess b{ color:var(--dark); }
+
+  .codebox{ background:var(--black); color:#e6e9f2; border-radius:14px; padding:16px 22px; font-family:'IBM Plex Mono',Consolas,monospace; font-size:13.5px; line-height:1.6; text-align:left; }
+  .codebox.sm{ font-size:12px; line-height:1.55; padding:14px 18px; }
+  .codebox .c{ color:#5c6a86; } .codebox .p{ color:#c792ea; } .codebox .v{ color:#c3e88d; } .codebox .t{ color:var(--cyan); } .codebox .u{ color:#ffcb6b; }
+
+  .grid6r{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; width:100%; }
+  .rc{ background:var(--white); border-radius:12px; padding:12px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; }
+  .rc .h{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--cyan); } .rc .x{ font-size:12px; color:var(--soft); margin-top:3px; }
+  .rc.err{ border-left:3px solid #c0264a; } .rc.err .h{ color:#c0264a; font-family:'IBM Plex Sans',sans-serif; font-size:14px; }
+
+  .ex{ display:flex; flex-direction:column; gap:9px; width:100%; }
+  .exrow{ display:flex; gap:14px; align-items:center; background:var(--white); border-radius:11px; padding:10px 16px; box-shadow:0 4px 14px rgba(20,30,50,.05); }
+  .exrow .lvl{ flex:0 0 84px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 0; text-align:center; border-radius:6px; }
+  .lv-f{ background:#e6f7ec; color:#0a7d2c; } .lv-i{ background:#fff3e0; color:#b64400; } .lv-d{ background:#fde7ea; color:#c0264a; }
+  .exrow .t{ font-size:13.5px; text-align:left; } .exrow .t b{ font-weight:700; }
+
+  .war{ background:#fff8e6; border-left:4px solid #f0a020; border-radius:0 10px 10px 0; padding:11px 15px; font-size:12.5px; color:#5b4a20; line-height:1.45; text-align:left; }
+  .war b{ color:#3d3210; }
+
+  .trio{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
+  .tcrd{ background:var(--white); border-radius:12px; padding:14px 15px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .tcrd .nm{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; color:var(--cyan); }
+  .tcrd .ds{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+
+  .score{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; }
+  .sc{ background:var(--white); border-radius:12px; padding:12px 14px; box-shadow:0 5px 16px rgba(20,30,50,.06); text-align:left; border-top:3px solid var(--cyan); }
+  .sc .pts{ font-size:30px; font-weight:700; color:var(--cyan); line-height:1; } .sc .nm{ font-weight:600; font-size:14px; margin-top:4px; } .sc .ds{ font-size:11.5px; color:var(--soft); margin-top:4px; line-height:1.4; }
+  table.tm{ width:100%; border-collapse:collapse; font-size:11.5px; background:var(--white); border-radius:12px; overflow:hidden; box-shadow:0 5px 16px rgba(20,30,50,.06); }
+  table.tm th{ background:var(--black); color:#fff; text-align:left; padding:6px 10px; font-weight:600; font-size:11px; letter-spacing:.04em; }
+  table.tm td{ padding:5px 10px; border-top:1px solid var(--line); vertical-align:top; }
+  table.tm td.p{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--cyan); white-space:nowrap; }
+  .tree{ font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.6; text-align:left; background:var(--white); border-radius:12px; padding:12px 18px; box-shadow:0 5px 16px rgba(20,30,50,.06); white-space:nowrap; }
+  .tree .d{ color:var(--cyan); font-weight:700; } .tree .cm{ color:var(--soft); } .tree .todo{ color:#b64400; font-weight:600; }
+  .hexrow{ display:grid; grid-template-columns:1fr 1.25fr; gap:12px; width:100%; }
+  .hcol{ border-radius:12px; padding:12px 15px; text-align:left; }
+  .hcol.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .hcol.bad{ background:#fff8e6; border:2px solid #f0a020; }
+  .hcol .ht{ font-weight:700; font-size:13.5px; } .hcol.good .ht{ color:#0a7d2c; } .hcol.bad .ht{ color:#8a5a00; }
+  .hcol .hd{ font-size:11.5px; color:var(--dark); margin-top:6px; line-height:1.55; }
+  .hcol .hn{ font-size:11px; color:var(--soft); margin-top:6px; font-style:italic; }
+  .steps{ display:flex; flex-direction:column; gap:7px; width:100%; }
+  .step{ display:flex; gap:12px; align-items:center; background:var(--white); border-radius:11px; padding:8px 14px; box-shadow:0 4px 14px rgba(20,30,50,.05); font-size:13px; }
+  .step .k{ flex:0 0 92px; font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--cyan); font-size:12px; }
+  .step .d{ text-align:left; } .step .d b{ font-weight:600; }
+  .cycle{ display:flex; align-items:center; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .cbox{ background:var(--white); border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(20,30,50,.07); text-align:center; min-width:130px; }
+  .cbox .ct{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13.5px; color:var(--cyan); }
+  .cbox .cd{ font-size:11.5px; color:var(--soft); margin-top:5px; }
+  .cbox.dark{ background:var(--black); } .cbox.dark .cd{ color:#8b95a5; }
+  .carrow{ font-size:22px; color:var(--cyan); font-weight:700; }
+  .vsbox{ display:flex; gap:16px; width:100%; justify-content:center; }
+  .vscard{ flex:1; max-width:360px; border-radius:12px; padding:14px 18px; text-align:left; }
+  .vscard.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .vscard.bad{ background:#eef4fd; border:2px solid #2b5fa8; }
+  .vscard .op{ font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:700; }
+  .vscard.good .op{ color:#0a7d2c; } .vscard.bad .op{ color:#2b5fa8; }
+  .vscard .note{ font-size:12.5px; color:var(--soft); margin-top:6px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="grid"></div>
+  <div class="mc"><span>Masterclass</span></div>
+  <div class="inner">
+    <img class="logo" src="tecsup-logo.png" alt="Tecsup" />
+    <div class="eyebrow">Bootcamp FrontEnd &amp; React · Bloque React · Clase 9</div>
+    <h1>Dos hooks<br />que faltaban</h1>
+    <p class="sub">useReducer: el carrito con acciones y toda su lógica en un archivo. useRef: hablar con el DOM y guardar lo que no se pinta. Todo sobre la Tienda Tech.</p>
+    <div class="foot"><span class="chip">4 h 15 · L·M·V</span><span>Retomamos donde cortamos</span></div>
+  </div>
+</section>
+
+<!-- 2 · DIAPO 1: PLAN -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Índice</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">00</div></aside>
+  <div class="body col">
+    <div class="kicker">Solo dos conceptos nuevos · todo sobre el proyecto que ya tienes</div>
+    <h2 style="margin-bottom:10px">El plan de hoy</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="cards2">
+        <div class="icard"><div class="n">0.</div><div><div class="tt">Reapertura</div><div class="dd">el punto de corte + tareas destacadas</div></div><div class="tm">8'</div></div>
+        <div class="icard"><div class="n">A.</div><div><div class="tt">Remate de la sesión anterior</div><div class="dd">solo lo pendiente</div></div><div class="tm">0–60'</div></div>
+        <div class="icard manos"><div class="n">B.</div><div><div class="tt">useReducer</div><div class="dd">el carrito con acciones · cambiar cantidad con − y +</div></div><div class="tm">78'</div></div>
+        <div class="icard manos"><div class="n">C.</div><div><div class="tt">useRef</div><div class="dd">foco en el buscador · foco al primer error · el aviso que se apaga solo</div></div><div class="tm">73'</div></div>
+        <div class="icard manos"><div class="n">D.</div><div><div class="tt">Reserva: el segundo reducer</div><div class="dd">los cuatro estados del catálogo en uno solo</div></div><div class="tm">35'</div></div>
+        <div class="icard"><div class="n">F.</div><div><div class="tt">Cierre + 5 tareas</div><div class="dd">push demostrado, dudas y anticipo</div></div><div class="tm">20'</div></div>
+      </div>
+      <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · se corta a las 3:50 donde toque</p>
+    </div>
+    <div class="pageno">2 / 10</div>
+  </div>
+</section>
+
+<!-- 3 · DIAPO 2: useState o useReducer -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Reducer</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Los dos sirven para lo mismo: guardar estado. Cambia cuándo conviene cada uno</div>
+    <h2 style="margin-bottom:14px"><span class="mono cy">useState</span> o <span class="mono cy">useReducer</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">useState</div><div class="note">Un valor suelto que cambia de una o dos maneras: el término del buscador, si el panel está abierto, un campo del formulario, un interruptor.</div></div>
+        <div class="vscard bad"><div class="op">useReducer</div><div class="note">Un dato que cambia de <b>muchas</b> maneras (el carrito: agregar, quitar, cambiar cantidad, vaciar) · varios datos que <b>cambian juntos</b> (productos + estado + respaldo) · o cuando la lógica merece salir del componente.</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:700px">
+        <span class="c">// hoy: tres funciones que cambian el mismo dato, cada una a su manera</span><br />
+        <span class="p">function</span> <span class="u">agregar</span>(p) { setItems((a) =&gt; agregarItems(a, p)); }<br />
+        <span class="p">function</span> <span class="u">quitar</span>(id) { setItems((a) =&gt; quitarItem(a, id)); }<br />
+        <span class="p">function</span> <span class="u">vaciar</span>() { setItems([]); }<br />
+        <span class="c">// …y mañana cambiarCantidad, aplicarCupon… la lógica queda repartida</span>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14.5px;max-width:720px">Con un reducer, <b>una sola función sabe todas las maneras</b> en que el carrito puede cambiar. Y como es una función pura, vive en el <b>dominio</b>: sin React, sin red, sin disco.</p>
+    </div>
+    <div class="pageno">3 / 10</div>
+  </div>
+</section>
+
+<!-- 4 · DIAPO 3: ANATOMÍA DE UN REDUCER -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Reducer</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">El componente no calcula: solo dice qué pasó</div>
+    <h2 style="margin-bottom:14px">Anatomía de un <span class="cy">reducer</span></h2>
+    <div class="fill col center" style="gap:14px">
+      <div class="cycle">
+        <div class="cbox"><div class="ct">despachar(accion)</div><div class="cd">el componente:<br />"pasó esto"</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox dark" style="background:var(--black)"><div class="ct">reducir(estado, accion)</div><div class="cd" style="color:#8b95a5">función pura:<br />decide el estado nuevo</div></div>
+        <div class="carrow">→</div>
+        <div class="cbox"><div class="ct">estado nuevo</div><div class="cd">React repinta</div></div>
+      </div>
+      <div class="codebox sm" style="max-width:720px">
+        <span class="p">export type</span> <span class="t">AccionCarrito</span> =<br />
+        &nbsp;&nbsp;| { tipo: <span class="v">'agregar'</span>; producto: Producto }&nbsp;&nbsp;| { tipo: <span class="v">'quitar'</span>; id: number }<br />
+        &nbsp;&nbsp;| { tipo: <span class="v">'cambiarCantidad'</span>; id: number; cantidad: number }&nbsp;&nbsp;| { tipo: <span class="v">'vaciar'</span> };<br /><br />
+        <span class="p">export function</span> <span class="u">reducirCarrito</span>(items, accion) {<br />
+        &nbsp;&nbsp;<span class="p">switch</span> (accion.tipo) {<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="p">case</span> <span class="v">'agregar'</span>: <span class="p">return</span> agregarItems(items, accion.producto);<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="c">// … un caso por acción, cada uno devolviendo una lista NUEVA</span><br />
+        &nbsp;&nbsp;}<br />
+        }
+      </div>
+      <div class="war" style="max-width:720px"><b>TypeScript trabajando:</b> dentro de cada <span class="mono">case</span> solo existen los datos de esa acción (en <span class="mono">'quitar'</span> hay <span class="mono">accion.id</span>, no <span class="mono">accion.producto</span>). Y si agregas una acción nueva y olvidas su caso, marca error: faltaría un camino que devuelva algo. &nbsp;·&nbsp; <b>El tercer argumento:</b> <span class="mono">useReducer(reducirCarrito, [], leerCarrito)</span> — la función de inicio, igual que <span class="mono">useState(leerCarrito)</span>.</div>
+    </div>
+    <div class="pageno">4 / 10</div>
+  </div>
+</section>
+
+<!-- 5 · DIAPO 4: ERRORES FRECUENTES DE useReducer -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Reducer</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">B</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de useReducer</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · modificar el estado dentro del reducer</div><div class="x"><span class="mono">items.push(...)</span> o <span class="mono">item.cantidad++</span> y devolver la misma lista: React compara referencias, cree que nada cambió y no repinta. Siempre <span class="mono">map</span>, <span class="mono">filter</span> o spread</div></div>
+        <div class="rc err"><div class="h">2 · tocar el mundo desde el reducer</div><div class="x">un <span class="mono">fetch</span>, un <span class="mono">localStorage</span> o la hora actual adentro. El reducer es puro: mismos datos, mismo resultado. Lo que toca afuera va en un efecto o un manejador</div></div>
+        <div class="rc err"><div class="h">3 · usar useReducer para todo</div><div class="x">un buscador con un solo valor no necesita acciones: es más código para lo mismo. Un valor suelto se queda en useState</div></div>
+        <div class="rc err"><div class="h">4 · acciones sin tipar</div><div class="x">si el tipo es <span class="mono">string</span> suelto, un error de escritura pasa desapercibido y el reducer no hace nada. Con la unión de literales, TypeScript lo marca</div></div>
+      </div>
+    </div>
+    <div class="pageno">5 / 10</div>
+  </div>
+</section>
+
+<!-- 6 · DIAPO 5: useRef, DOS USOS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Ref</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Un objeto con una propiedad: current · el mismo en todos los renders · cambiarlo NO repinta</div>
+    <h2 style="margin-bottom:12px"><span class="mono cy">useRef</span>: dos usos</h2>
+    <div class="fill col center" style="gap:12px">
+      <div class="vsbox">
+        <div class="vscard good"><div class="op">1 · hablar con un elemento</div><div class="note"><span class="mono">ref={campo}</span> en el JSX y React deja el elemento en <span class="mono">current</span>. Para lo que solo el elemento sabe hacer: <b>poner el foco</b>, medir su tamaño, reproducir un video.<br /><span class="mono">campo.current?.focus()</span></div></div>
+        <div class="vscard bad"><div class="op">2 · guardar lo que no se pinta</div><div class="note">Un valor que el código necesita entre renders pero que <b>nadie ve</b>: el identificador de un temporizador, para poder cancelarlo.<br /><span class="mono">temporizador.current = window.setTimeout(…)</span></div></div>
+      </div>
+      <div class="trio">
+        <div class="tcrd"><div class="nm">estado</div><div class="ds">se muestra en pantalla · al cambiar, <b>repinta</b> · se lee en el render</div></div>
+        <div class="tcrd"><div class="nm">ref</div><div class="ds">no se muestra · al cambiar, <b>no repinta</b> · se lee en manejadores y efectos</div></div>
+        <div class="tcrd"><div class="nm">la regla</div><div class="ds"><b>Si se ve, es estado. Si solo lo usa el código, puede ser un ref.</b></div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:14px"><span class="mono">useRef&lt;HTMLInputElement&gt;(null)</span> — arranca en null porque en el primer render el elemento aún no existe: por eso se usa dentro de un efecto, y con <span class="mono">?.</span></p>
+    </div>
+    <div class="pageno">6 / 10</div>
+  </div>
+</section>
+
+<!-- 7 · DIAPO 6: ERRORES FRECUENTES DE useRef -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Ref</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">C</div></aside>
+  <div class="body col">
+    <div class="kicker">Para reconocerlos sin sufrirlos — ninguno se codea</div>
+    <h2 style="margin-bottom:14px"><span class="cy">Errores frecuentes</span> de useRef</h2>
+    <div class="fill center">
+      <div class="grid6r" style="grid-template-columns:1fr 1fr">
+        <div class="rc err"><div class="h">1 · guardar en un ref algo que se muestra</div><div class="x">lo cambias y la pantalla se queda igual, porque cambiar un ref no repinta. Si se ve, es estado</div></div>
+        <div class="rc err"><div class="h">2 · leer current durante el render</div><div class="x">en el primer render vale <span class="mono">null</span>, y React no se entera de sus cambios. El ref se lee en manejadores y efectos</div></div>
+        <div class="rc err"><div class="h">3 · enfocar antes de que el elemento exista</div><div class="x"><span class="mono">focus()</span> en el cuerpo del componente: <span class="mono">current</span> todavía es null. Va dentro de un efecto, que corre después de pintar</div></div>
+        <div class="rc err"><div class="h">4 · cambiar el DOM por fuera de React</div><div class="x">agregar clases o borrar nodos a mano: React repinta cuando quiere y borra esos cambios. El ref es para leer o pedirle algo al elemento, no para dibujar</div></div>
+      </div>
+    </div>
+    <div class="pageno">7 / 10</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: LO DE HOY -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Hasta donde llegamos hoy</div>
+    <h2 style="margin-bottom:14px">Lo de hoy</h2>
+    <div class="fill center">
+      <div class="grid6r">
+        <div class="rc"><div class="h">reducer</div><div class="x">recibe estado y acción, devuelve el estado nuevo. El componente solo despacha</div></div>
+        <div class="rc"><div class="h">función pura → dominio</div><div class="x">sin React, sin red, sin disco: todo lo que le puede pasar al carrito, en un archivo</div></div>
+        <div class="rc"><div class="h">acciones tipadas</div><div class="x">unión de literales: cada acción con sus datos, y TypeScript exige los casos</div></div>
+        <div class="rc"><div class="h">useRef y el DOM</div><div class="x">foco en el buscador, foco al primer campo con error: accesibilidad real</div></div>
+        <div class="rc"><div class="h">useRef y los valores</div><div class="x">el temporizador del aviso: se conserva entre renders y no repinta al cambiar</div></div>
+        <div class="rc"><div class="h">la regla</div><div class="x">si se ve, es estado; si solo lo usa el código, puede ser un ref</div></div>
+      </div>
+    </div>
+    <div class="pageno">8 / 10</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: 5 TAREAS -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
+  <div class="body col">
+    <div class="kicker">Criterio de entrega: npm run build sin errores + push</div>
+    <h2 style="margin-bottom:12px">5 tareas</h2>
+    <div class="fill col" style="justify-content:center">
+      <div class="ex">
+        <div class="exrow"><div class="lvl lv-f">Fácil</div><div class="t"><b>Replica la clase, hasta donde llegamos</b>, con la grabación al lado. Es LA tarea.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El reducer del catálogo</b>: los cuatro <span class="mono">useState</span> de App en un solo <span class="mono">useReducer</span> con sus tres acciones.</div></div>
+        <div class="exrow"><div class="lvl lv-i">Intermedio</div><div class="t"><b>El foco del panel</b>: al abrir el panel del carrito, que el foco vaya a su título. Pista: <span class="mono">ref</span> en el <span class="mono">h2</span>, <span class="mono">tabIndex={-1}</span> y un efecto que dependa de si está abierto.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Deshacer</b>: un botón que devuelva el carrito a como estaba antes de la última acción. El carrito anterior en un <span class="mono">useRef</span> (no se muestra) y una acción <span class="mono">restaurar</span> en el reducer.</div></div>
+        <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>Llévalos a tu proyecto final</b>: tu colección con <span class="mono">useReducer</span>, y un <span class="mono">useRef</span> para una mejora de accesibilidad. Explícalo en el README: es material de sustentación.</div></div>
+      </div>
+    </div>
+    <div class="pageno">9 / 10</div>
+  </div>
+</section>
+
+<!-- 10 · DIAPO 9: LO QUE SIGUE -->
+<section class="slide next">
+  <div class="grid"></div>
+  <div class="inner">
+    <span class="pill">Lo que sigue</span>
+    <h2>Ya conoces <span style="color:var(--cyan)">todos los hooks</span> del día a día</h2>
+    <div class="q" style="font-size:15px;font-family:'IBM Plex Mono',monospace;line-height:1.75">
+      <span style="color:#e6e9f2">useState · useEffect · useContext · useReducer · useRef · useMemo</span><br />
+      <span style="color:#e6e9f2">useParams · useNavigate · useLocation</span><span style="color:#6b7686">  ← los del Router</span><br />
+      <span style="color:var(--cyan)">useCart · useSesion</span><span style="color:#6b7686">  ← los tuyos</span>
+    </div>
+    <p class="lead">Lo que queda del bloque es <b>tu proyecto</b>: llevar esto a tu tema, terminarlo y sustentarlo. Los dos hooks de hoy dan material para la defensa: por qué tu colección usa un reducer, y qué mejora de accesibilidad resolviste con un ref.</p>
+    <p class="bye">Trae las tareas hechas y el build en cero. Nos vemos.</p>
+  </div>
+</section>
+
+</body>
+</html>
