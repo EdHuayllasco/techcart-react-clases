@@ -87,6 +87,13 @@
   table.tm td.p{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--cyan); white-space:nowrap; }
   .tree{ font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.6; text-align:left; background:var(--white); border-radius:12px; padding:12px 18px; box-shadow:0 5px 16px rgba(20,30,50,.06); white-space:nowrap; }
   .tree .d{ color:var(--cyan); font-weight:700; } .tree .cm{ color:var(--soft); } .tree .todo{ color:#b64400; font-weight:600; }
+  .hexrow{ display:grid; grid-template-columns:1fr 1.25fr; gap:12px; width:100%; }
+  .hcol{ border-radius:12px; padding:12px 15px; text-align:left; }
+  .hcol.good{ background:#e6f7ec; border:2px solid #0a7d2c; }
+  .hcol.bad{ background:#fff8e6; border:2px solid #f0a020; }
+  .hcol .ht{ font-weight:700; font-size:13.5px; } .hcol.good .ht{ color:#0a7d2c; } .hcol.bad .ht{ color:#8a5a00; }
+  .hcol .hd{ font-size:11.5px; color:var(--dark); margin-top:6px; line-height:1.55; }
+  .hcol .hn{ font-size:11px; color:var(--soft); margin-top:6px; font-style:italic; }
   .steps{ display:flex; flex-direction:column; gap:7px; width:100%; }
   .step{ display:flex; gap:12px; align-items:center; background:var(--white); border-radius:11px; padding:8px 14px; box-shadow:0 4px 14px rgba(20,30,50,.05); font-size:13px; }
   .step .k{ flex:0 0 92px; font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--cyan); font-size:12px; }
@@ -121,11 +128,12 @@
         <div class="icard manos"><div class="n">B.</div><div><div class="tt">La rúbrica, criterio por criterio</div><div class="dd">20 puntos · 12 temas · bonus · sustentación</div></div><div class="tm">30'</div></div>
         <div class="icard manos"><div class="n">C.</div><div><div class="tt">Del tema al contrato</div><div class="dd">tres preguntas antes de codear · APIs públicas</div></div><div class="tm">25'</div></div>
         <div class="icard manos"><div class="n">D.</div><div><div class="tt">La base del proyecto, desde cero</div><div class="dd">un recetario: capas · API · sesión · rutas · deploy</div></div><div class="tm">100'</div></div>
-        <div class="icard"><div class="n">E–F.</div><div><div class="tt">Errores frecuentes + cierre del bloque</div><div class="dd">plan hasta la sustentación · tareas = hitos</div></div><div class="tm">40'</div></div>
+        <div class="icard manos"><div class="n">E.</div><div><div class="tt">Integración con backend propio</div><div class="dd">Spring Boot · CORS · proxy de Vite · el adaptador</div></div><div class="tm">40'</div></div>
+        <div class="icard"><div class="n">F–G.</div><div><div class="tt">Errores frecuentes + cierre del bloque</div><div class="dd">plan hasta la sustentación · tareas = hitos</div></div><div class="tm">40'</div></div>
       </div>
       <p class="recess">☕ <b>Receso de 15 min</b> alrededor de las 2:00 &nbsp;·&nbsp; verde = <b>el corazón del día</b> · cierre a las 3:45</p>
     </div>
-    <div class="pageno">2 / 11</div>
+    <div class="pageno">2 / 13</div>
   </div>
 </section>
 
@@ -144,7 +152,7 @@
       </div>
       <div class="war" style="max-width:720px"><b>Requisitos de recepción (sin puntos; sin ellos no se corrige):</b> <span class="mono">npm run build</span> sin errores · aplicación desplegada en Vercel y operativa desde cualquier dispositivo · consola del navegador sin errores en el flujo principal.</div>
     </div>
-    <div class="pageno">3 / 11</div>
+    <div class="pageno">3 / 13</div>
   </div>
 </section>
 
@@ -166,7 +174,7 @@
       </table>
       <p class="lead" style="text-align:center;font-size:13.5px"><b>Cinco requisitos mínimos, sea cual sea el tema:</b> entidad principal desde una API real · colección del usuario con persistencia · formulario principal con validación · sesión con áreas protegidas · desplegada. <b>TypeScript acotado:</b> interfaces del dominio usadas + props tipadas.</p>
     </div>
-    <div class="pageno">4 / 11</div>
+    <div class="pageno">4 / 13</div>
   </div>
 </section>
 
@@ -189,7 +197,7 @@
       </div>
       <p class="lead" style="text-align:center;font-size:14px">Con el <b>contrato</b> y el <b>mapa de rutas</b> en papel, el resto es el mismo orden de la tienda. La API se traduce en UN archivo: el adaptador.</p>
     </div>
-    <div class="pageno">5 / 11</div>
+    <div class="pageno">5 / 13</div>
   </div>
 </section>
 
@@ -213,11 +221,63 @@
       </div>
       <div class="war" style="max-width:300px"><b>Hoy sale con:</b> capas, API con adaptador y tres estados, detalle por URL, sesión real que expira, ruta protegida, lazy, deploy.<br /><br /><b>Te falta (las tareas):</b> la colección en Context, el formulario con validación, un hook propio. Con eso es un proyecto final.</div>
     </div>
-    <div class="pageno">6 / 11</div>
+    <div class="pageno">6 / 13</div>
   </div>
 </section>
 
-<!-- 7 · DIAPO 6: ERRORES FRECUENTES EN PROYECTOS FINALES -->
+<!-- 7 · DIAPO 6: INTEGRACIÓN CON UN BACKEND PROPIO -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Backend</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">E</div></aside>
+  <div class="body col">
+    <div class="kicker">Último tema del temario · del frontend hacia Spring Boot</div>
+    <h2 style="margin-bottom:10px">Integración con un <span class="cy">backend propio</span></h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="hexrow">
+        <div class="hcol good">
+          <div class="ht">No cambia NADA de React</div>
+          <div class="hd">componentes · props · estado · derivados · efectos · rutas · Context · hooks propios · los tres estados de carga · RutaProtegida · memo · lazy</div>
+          <div class="hn">Cero líneas, porque la API está detrás de un adaptador.</div>
+        </div>
+        <div class="hcol bad">
+          <div class="ht">Cambian 4 cosas, todas en infraestructura</div>
+          <div class="hd">1 · la URL base → variable de entorno<br />2 · la forma del JSON → el adaptador (Spring pagina en <span class="mono">content</span>)<br />3 · el campo del token (<span class="mono">token</span>, no <span class="mono">accessToken</span>) y la ruta de login<br />4 · los códigos: <span class="mono">401</span> sin token o vencido · <span class="mono">403</span> sin permiso</div>
+          <div class="hn">Cambiar de backend = 1 archivo por asunto + 1 línea de import.</div>
+        </div>
+      </div>
+      <div class="codebox sm" style="max-width:730px">
+        <span class="c">// CORS: el navegador bloquea, no el backend. La respuesta llegó; no te la entrega.</span><br />
+        blocked by CORS policy: No <span class="v">'Access-Control-Allow-Origin'</span> header is present<br />
+        <span class="c">// producción: que el backend autorice tu dominio .vercel.app (y sea https)</span><br />
+        <span class="c">// desarrollo: proxy de Vite →</span> server: { proxy: { <span class="v">'/api'</span>: { target: <span class="v">'http://localhost:8080'</span>, changeOrigin: <span class="t">true</span> } } }
+      </div>
+    </div>
+    <div class="pageno">7 / 13</div>
+  </div>
+</section>
+
+<!-- 8 · DIAPO 7: EL CONTRATO QUE LE PIDES AL BACKEND -->
+<section class="slide">
+  <aside class="rail"><div class="rtitle">Backend</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">E</div></aside>
+  <div class="body col">
+    <div class="kicker">Pídelo por escrito antes de escribir el adaptador</div>
+    <h2 style="margin-bottom:12px">El <span class="cy">contrato</span> que le pides al backend</h2>
+    <div class="fill col center" style="gap:10px">
+      <div class="steps">
+        <div class="step"><div class="k">1 · URL base</div><div class="d">en desarrollo y en producción. La de producción, <b>con https</b>: una página HTTPS no puede pedir a HTTP.</div></div>
+        <div class="step"><div class="k">2 · Rutas</div><div class="d">las que vas a usar, con su método: <span class="mono">GET /api/recetas</span>, <span class="mono">GET /api/recetas/{id}</span>, <span class="mono">POST /api/auth/login</span>…</div></div>
+        <div class="step"><div class="k">3 · Ejemplos</div><div class="d">una respuesta <b>real</b> de cada ruta, pegada tal cual. Con eso escribes la interfaz cruda sin inventar nombres.</div></div>
+        <div class="step"><div class="k">4 · Token</div><div class="d">qué ruta lo entrega, qué campos recibe, y <b>cómo se llama</b> el campo que vuelve.</div></div>
+        <div class="step"><div class="k">5 · Duración</div><div class="d">cuánto vale el token, y en qué unidad viene (segundos o milisegundos).</div></div>
+        <div class="step"><div class="k">6 · Errores</div><div class="d">qué códigos devuelven (401 · 403 · 404 · 500) y si mandan un mensaje en el cuerpo que puedas mostrarle al usuario.</div></div>
+        <div class="step"><div class="k">7 · CORS</div><div class="d">si está habilitado para <span class="mono">localhost:5173</span> y para tu dominio de Vercel.</div></div>
+      </div>
+      <p class="lead" style="text-align:center;font-size:13.5px">La mitad de los problemas de integración se resuelven con <b>un ejemplo de respuesta pegado en el chat</b>.</p>
+    </div>
+    <div class="pageno">8 / 13</div>
+  </div>
+</section>
+
+<!-- 9 · DIAPO 8: ERRORES FRECUENTES EN PROYECTOS FINALES -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Proyecto</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">E</div></aside>
   <div class="body col">
@@ -233,11 +293,11 @@
         <div class="rc err"><div class="h">6 · 404 al recargar o .env en el repo</div><div class="x">falta vercel.json; o una clave publicada. Revisar antes de entregar</div></div>
       </div>
     </div>
-    <div class="pageno">7 / 11</div>
+    <div class="pageno">9 / 13</div>
   </div>
 </section>
 
-<!-- 8 · DIAPO 7: SUSTENTACIÓN -->
+<!-- 10 · DIAPO 9: SUSTENTACIÓN -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
   <div class="body col">
@@ -252,11 +312,11 @@
       </div>
       <div class="war" style="max-width:720px"><b>Preguntas de muestra:</b> "Señala un dato derivado en tu App: ¿por qué no es un useState?" · "Muestra la función de limpieza de un efecto: ¿qué pasa si la borras?" · "Pon la aplicación en Offline: ¿qué ve el usuario y por qué eso es correcto?" · "¿Qué pasaría si tu listado usara el índice como key?"</div>
     </div>
-    <div class="pageno">8 / 11</div>
+    <div class="pageno">10 / 13</div>
   </div>
 </section>
 
-<!-- 9 · DIAPO 8: PLAN DE TRABAJO -->
+<!-- 11 · DIAPO 10: PLAN DE TRABAJO -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Cierre</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
   <div class="body col">
@@ -272,11 +332,11 @@
       </div>
       <p class="lead" style="text-align:center;font-size:14.5px"><b>Entrega:</b> [FECHA] &nbsp;·&nbsp; <b>Sustentaciones:</b> [FECHA] &nbsp;·&nbsp; Reviso los repos entre medio: si te trabas, un commit con el error y un mensaje alcanzan.</p>
     </div>
-    <div class="pageno">9 / 11</div>
+    <div class="pageno">11 / 13</div>
   </div>
 </section>
 
-<!-- 10 · DIAPO 9: 5 TAREAS -->
+<!-- 12 · DIAPO 11: 5 TAREAS -->
 <section class="slide">
   <aside class="rail"><div class="rtitle">Tareas</div><div class="brand">Tecsup<small>MASTERCLASS</small></div><div class="rnum">F</div></aside>
   <div class="body col">
@@ -291,11 +351,11 @@
         <div class="exrow"><div class="lvl lv-d">Difícil</div><div class="t"><b>El bonus completo</b>: una interfaz propia para el adaptador (<span class="mono">RepositorioRecetas</span>), <span class="mono">api.ts</span> la implementa y la aplicación depende de la interfaz. Puertos y adaptadores de verdad.</div></div>
       </div>
     </div>
-    <div class="pageno">10 / 11</div>
+    <div class="pageno">12 / 13</div>
   </div>
 </section>
 
-<!-- 11 · DIAPO 10: LO QUE CONSTRUISTE -->
+<!-- 13 · DIAPO 12: LO QUE CONSTRUISTE -->
 <section class="slide next">
   <div class="grid"></div>
   <div class="inner">
@@ -305,6 +365,7 @@
       <span style="color:#e6e9f2">componentes · props · estado · derivados · efectos · limpieza</span><br />
       <span style="color:#e6e9f2">API con adaptador · estados de carga · rutas · formularios · Context · hooks propios</span><br />
       <span style="color:#e6e9f2">sesión con JWT · rutas protegidas · arquitectura en capas · memo/lazy · producción</span><br />
+      <span style="color:#e6e9f2">integración con un backend propio · CORS · proxy de desarrollo</span><br />
       <span style="color:#6b7686">// una tienda en internet, y hoy otro proyecto desde cero en una tarde</span>
     </div>
     <p class="lead">Eso es lo que lleva un desarrollador frontend junior a su primera entrevista — y la URL para probarlo. Lo que sigue es tu proyecto: mío es revisar, responder y calificar; tuyo es construir.</p>
